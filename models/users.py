@@ -2,6 +2,7 @@
 import datetime
 from sqlalchemy import Column, Integer, String, DateTime, ForeignKey
 from sqlalchemy.orm import relationship, backref
+
 from models.base import ORMBase, engine
 
 
@@ -10,14 +11,14 @@ class UserLogin(ORMBase):
     account = Column(String(64), nullable=False)
     password = Column(String(128), nullable=False)
     info = relationship("UserInfo")
+    upload_songs = relationship("Songs")
 
 
 class UserInfo(ORMBase):
     _id = Column(Integer, primary_key=True, autoincrement=True)
     login_id = Column(Integer, ForeignKey("user_login._id", name="fk_login"))
     description = Column(String(128), nullable=False, default="这个人很懒，什么都没有留下")
-    favorites = relationship("Songs", secondary=AssociationUserSong, backref="songs")
     created_datetime = Column(DateTime, default=datetime.datetime.now)
-    songs = relationship("Songs")
+
 
 ORMBase.metadata.create_all(engine)
