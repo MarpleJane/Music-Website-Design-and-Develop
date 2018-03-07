@@ -5,6 +5,7 @@ from models.base import ORMBase, engine
 
 
 class Songs(ORMBase):
+    """上传的和收藏的歌曲"""
     _id = Column(Integer, primary_key=True, autoincrement=True)
     uploader = Column(Integer, ForeignKey("user_login._id", name="fk_uploader"))
     name = Column(String(128), nullable=False)
