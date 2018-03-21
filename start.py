@@ -1,16 +1,20 @@
 #coding: utf-8
 
 import logging
+import os
 
 import tornado.ioloop
 import tornado.web
 from tornado.httpserver import HTTPServer
 
 
-base = r"musicweb/"
+BASE = r"musicweb/"
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+TEMPLATE_PATH = os.path.join(BASE_DIR, "templates")
+STATIC_PATH = os.path.join(BASE_DIR, "statics")
 
 urls = [
-    (base+r"index", IndexHandler),
+    (BASE+r"index", IndexHandler),
 ]
 
 application_settings = dict(
