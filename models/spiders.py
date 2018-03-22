@@ -16,10 +16,11 @@ class SpiderRecords(ORMBase):
     """存放爬到的歌曲链接"""
     _id = Column(Integer, primary_key=True, autoincrement=True)
     dsp_id = Column(Integer, ForeignKey("spider_dsp._id", name="fk_dsp_id"), nullable=False)
-    name = Column(String(1024), nullable=True)
+    rank = Column(Integer, nullable=False)
+    name = Column(String(1024), nullable=False)
     author = Column(String(1024), nullable=True)
     link = Column(String(256), nullable=False)
-    created_datetime = Column(DateTime, nullable=False, default=datetime.datetime.now)
+    created_datetime = Column(DateTime, nullable=False, default=datetime.datetime.now().date)
 
 
 ORMBase.metadata.create_all(engine)
