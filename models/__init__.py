@@ -17,3 +17,5 @@ from models.users import *
 from models.songs import *
 from models.spiders import *
 from models.associations import *
+
+from models.get_session import orm_session
