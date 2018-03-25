@@ -1,27 +1,39 @@
 #coding: utf-8
+"""
+  cookie_secret: https://blog.csdn.net/adream307/article/details/7604125
+"""
 
 import logging
 import os
+import base64
+import uuid
 
 import tornado.ioloop
 import tornado.web
 from tornado.httpserver import HTTPServer
 
+from backend import *
 
-BASE = r"musicweb/"
+
+BASE = r"/musicweb/"
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TEMPLATE_PATH = os.path.join(BASE_DIR, "templates")
 STATIC_PATH = os.path.join(BASE_DIR, "statics")
 
+BACKEND = r"/butler/"
+
 urls = [
-    (BASE+r"index", IndexHandler),
+    (BACKEND+r"login", BackLoginController),
+    (BACKEND+r"logout", BackLogoutController),
+    (BACKEND+r"welcome", WelcomeController),
 ]
 
 application_settings = dict(
     template_path=TEMPLATE_PATH,
     static_path=STATIC_PATH,
     xsrf_cookies=False,
-    debug=True
+    debug=True,
+    cookie_secret=base64.b64encode(uuid.uuid4().bytes + uuid.uuid4().bytes)
 )
 
 
@@ -38,7 +50,7 @@ def main():
     )
     server.bind(port)
     server.start(1)
-    logging.info("Start application from [%s] port [%s]", __file__, port)
+    logging.warn("Start application from [%s] port [%s]", __file__, port)
     tornado.ioloop.IOLoop.instance().start()
 
 

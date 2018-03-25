@@ -23,4 +23,11 @@ class UserInfo(ORMBase):
     created_datetime = Column(DateTime, default=datetime.datetime.now)
 
 
+class AdminInfo(ORMBase):
+    """管理员信息"""
+    _id = Column(Integer, primary_key=True, autoincrement=True)
+    account = Column(String(64), nullable=False)
+    password = Column(String(128), nullable=False)
+
+
 ORMBase.metadata.create_all(engine)
