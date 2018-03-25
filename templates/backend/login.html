@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Backend</title>
+	<!-- <link rel="stylesheet" href="{{ static_url('css/iview/iview.css') }}"> -->
+	<link rel="stylesheet" href="http://unpkg.com/iview@2.9.2/dist/styles/iview.css">
+	<style>
+		.main{
+			text-align: center;
+			background-color: #fff;
+			border-radius: 20px;
+			width: 300px;
+			height: 350px;
+			margin: auto;
+			position: absolute;
+			top: 0;
+			left: 0;
+			right: 0;
+			bottom: 0;
+		}
+	</style>
+</head>
+<body>
+	<div id="login">
+		<div class="main">
+			<h1 style="margin-bottom:10px">后 台</h1>
+			<i-form ref="adm" :model="ad" :rules="ruleInline">
+				<form-item prop="account">
+					<i-input type="text" v-model="ad.account" placeholder="account">
+						<icon type="ios-person-outline" slot="prepend"></icon>
+					</i-input>
+				</form-item>
+				<form-item prop="password">
+					<i-input type="password" v-model="ad.password" placeholder="password"  @keyup.enter.native="submitLogin('adm')">
+						<icon type="ios-locked-outline" slot="prepend"></icon>
+					</i-input>
+				</form-item>
+				<form-item>
+					<i-button type="primary" @click="submitLogin('adm')">登 入</i-button>
+				</form-item>
+			</i-form>
+		</div>
+	</div>
+	<script src="{{ static_url('js/vue/vue.js') }}"></script>
+	<script src="{{ static_url('js/iview/iview2.9.2.min.js') }}"></script>
+	<script src="{{ static_url('js/vue-resource.js') }}"></script>
+	<!-- <script src="https://cdn.jsdelivr.net/npm/axios@0.11.1/dist/axios.min.js"></script> -->
+	<!-- <script src="http://unpkg.com/iview/dist/iview.min.js"></script> -->
+	<script>
+		var login = new Vue({
+			el: "#login",
+			data () {
+				return {
+					ad: {
+						account: '',
+						password: ''
+					},
+					ruleInline: {
+						account: [
+						    { required: true, message: "Can't be empty", trigger: "blur" }
+						],
+						password: [
+						    { required: true, message: "Can't be empty", trigger: "blur" },
+						    { type: "string", min: 6, message: "Can't be less than 6 bits" }
+						]
+					}
+				}
+			},
+			methods: {
+				submitLogin: function(adm) {
+					var vm = this;
+					vm.$refs[adm].validate(function (valid) {
+						if (valid) {
+							vm.$http.post("login", 
+								{admin: vm.ad.account, password: vm.ad.password},
+								{emulateJSON: true}
+								)
+							  .then(function (response) {
+							  	var ret = response.body.ret;
+							  	var msg = response.body.msg;
+							  	if (ret) {
+							  		vm.$Message.error(msg);
+							  	} else {
+							  		vm.$Message.success(msg);
+							  		location.reload();
+							  	}
+							  }, function (response) {
+							  	alert("error");
+							  })
+						} else {
+							vm.$Message.error("Follow the rule, please.");
+						}
+					})
+				}
+			}
+		})
+
+	</script>
+</body>
+</html>

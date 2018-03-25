@@ -1,12 +1,14 @@
 #! coding: utf8
+import logging
+
 from models import AdminInfo
 from controller_base import BaseController
 
-class LoginController(BaseController):
+class BackLoginController(BaseController):
     """butler/login"""
     def get(self):
         if self.current_user("admin_id"):
-            self.redirect("") #TODO redirect to manage uri
+            self.redirect("welcome")
             return
         self.render("backend/login.html")
 
@@ -17,21 +19,24 @@ class LoginController(BaseController):
         ad = self.session.query(AdminInfo).\
                 filter(AdminInfo.account==admin).\
                 first()
-        if not ad:
-            self.write()  # TODO return account not exist
+        flag = False
+        if ad:
+            if ad.password == password:
+                flag = True
+            if not flag:
+                self.write(dict(ret=1, msg="Password error"))
+            else:
+                self.set_secure_cookie("admin_id", str(ad._id), expires_days=None)
+                #self.redirect("welcome")
+                self.write(dict(ret=0, msg="Login success", url="welcome"))
+        else:
+            self.write(dict(ret=1, msg="Admin not exist"))
 
-        if ad.password != password:
-            self.write()  # TODO return password error
 
-        self.set_secure_cookie("admin_id", ad._id, expires_days=None)
-
-        self.redirect("")  # TODO redirect to manage uri
-
-
-class LogoutController(BaseController):
+class BackLogoutController(BaseController):
     """butler/logout"""
     def get(self):
         if self.current_user("admin_id"):
             self.clear_cookie("admin_id")  # the effect will not be seen until the following request
 
-        self.redirect("butler/login")
+        self.redirect("login")
