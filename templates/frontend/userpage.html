@@ -1,0 +1,52 @@
+{% extends "./base.html" %}
+
+{% block main %}
+<div id="user" class="space-container space-clearfix">
+	<div class="block-padding">
+		<div v-if="myself">
+		</div>
+		<div v-else>
+			<other-user></other-user>
+		</div>
+	</div>
+</div>
+
+<template id="other">
+	<div>
+		<div class="space-col1">
+			<collapse class="my-collapse">
+				<panel name="upload" class="section-title">
+					TA的投稿
+					<p slot="content">aaaaaaaaa</p>
+				</panel>
+				<panel name="favourite" class="section-title">
+					TA的专栏
+					<p slot="content">aaaaaaaa</p>
+				</panel>
+			</collapse>
+		</div>
+		<div class="space-col2">
+			<div class="section-user">
+				afdsdfs
+			</div>
+		</div>
+	</div>
+</template>
+{% end %}
+
+{% block script %}
+<script>
+	var Other = Vue.component("other-user", {
+		template: "#other"
+	});
+
+	var user = new Vue({
+		el: "#user",
+		data: function() {
+			return {
+				myself: false
+			}
+		}
+	});
+</script>
+{% end %}

@@ -13,7 +13,7 @@ import tornado.web
 from tornado.httpserver import HTTPServer
 
 from backend import *
-
+from frontend import *
 
 BASE = r"/musicweb/"
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -26,6 +26,10 @@ urls = [
     (BACKEND+r"login", BackLoginController),
     (BACKEND+r"logout", BackLogoutController),
     (BACKEND+r"welcome", WelcomeController),
+
+    (BASE+r"index", IndexController),
+    (BASE+r"song", SongController),
+    (BASE+r"space", SpaceController),
 ]
 
 application_settings = dict(

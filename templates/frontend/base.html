@@ -4,11 +4,85 @@
 	<meta charset="UTF-8">
 	<title>Wuliwuli</title>
 	<link rel="stylesheet" href="http://unpkg.com/iview@2.9.2/dist/styles/iview.css">
+	<link rel="stylesheet" href="{{ static_url('css/mycss.css') }}">
+	<style>
+		.ivu-menu-dark {
+			background: #000;
+		}
+		
+		.ivu-layout-header {
+			background: #000;
+		}
+	</style>
+	{% block header %}
+	{% end %}
 </head>
 <body>
-	<div id="nav"></div>
-	<script src="{{ static_url('js/require/config.js') }}"></script>
-	<script src="{{ static_url('js/require/require.js') }}"></script>
+	<div id="nav">
+	  <div v-if="user == 0">
+	    <div class="layout">
+	      <layout>
+	        <i-header>
+	          <i-menu mode="horizontal" theme="dark">
+	            <div class="layout-logo"></div>
+	            <div class="layout-nav">
+	              <menu-item name="signin">
+	                登录
+	              </menu-item>
+	              <menu-item name="signup">
+	                注册
+	              </menu-item>
+	            </div>
+	          </i-menu>
+	        </i-header>
+	      </layout>
+	    </div>
+      </div>
+    
+      <div v-else>
+	    <div class="layout">
+	      <layout>
+	        <i-header>
+	          <i-menu mode="horizontal" theme="dark">
+	            <div class="layout-logo"></div>
+	            <div class="layout-nav">
+	              <menu-item name="avatar">
+	                aaa
+	              </menu-item>
+	            </div>
+	          </i-menu>
+	        </i-header>
+	      </layout>
+	    </div>
+      </div>
+	</div>
+
+
+	<div class="banner"></div>
+	<div id="search">
+		<input type="text" class="header-input search-class" v-model="value"></input>
+	</div>
+	{% block main %}
+	{% end %}
+
+	<script src="{{ static_url('js/vue/vue.js') }}"></script>
+	<script src="{{ static_url('js/vue/vue-resource.js') }}"></script>
+	<script src="{{ static_url('js/vue/vue-router@3.0.1.js') }}"></script>
+	<script src="{{ static_url('js/iview/iview2.9.2.min.js') }}"></script>
+	<script>
+		var nav = new Vue({
+			el: "#nav",
+			data: {
+				user: 0
+			}
+		});
+		// var search = new Vue({
+		// 	el: "#search",
+		// 	data: {
+		// 		value: ""
+		// 	}
+		// })
+	</script>
 	{% block script %}
 	{% end %}
 </body>

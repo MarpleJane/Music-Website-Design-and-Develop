@@ -1,0 +1,400 @@
+.layout{
+	/*border: 1px solid #d7dde4;*/
+	background: #f5f7f9;
+	border-bottom: 2px solid #cd3333;
+	position: relative;
+	border-radius: 4px;
+	overflow: hidden;
+}
+
+.layout-logo{
+	width: 100px;
+	height: 30px;
+	background: #5b6270;
+	border-radius: 3px;
+	float: left;
+	position: relative;
+	top: 15px;
+	left: 20px;
+}
+
+.layout-nav{
+	width: 420px;
+	margin: 0px auto;
+	margin-right: -150px;
+	/*margin-left: 5px;*/
+}
+
+.layout-sub-container{
+	margin: 0 auto;
+	width: 980px;
+}
+
+.layout-sub-inner{
+	width: 100%;
+	height: 36px;
+	margin: 0 auto;
+}
+
+.my-horizontal{
+	height: 36px;
+	line-height: 36px;
+}
+
+.banner{
+	position: relative;
+	width: 100%;
+	height: 150px;
+	margin: 0 auto;
+	background-image: url("../img/system/banner.png");
+	background-position: center -10px;
+	background-repeat: no-repeat;
+}
+
+.chief-recommend-module{
+	padding-bottom: 40px;
+}
+
+.search-class{
+	position: absolute;
+	right: 200px;
+	top: 150px;
+	background-color: #fff;
+}
+
+.header-input{
+	margin: 6px 0 0;
+    padding: 0 34px 0 10px;
+    width: 220px;
+    height: 29px;
+    line-height: 29px;
+    display: inline;
+    border-radius: 20px;
+    outline: 0;
+    transition: .5s;
+    box-sizing: border-box;
+    border: 0px;
+    /*width: 130px;*/
+    /*background-color: #fff;*/
+    background-color: rgba(255, 255, 255, 0.75);
+    color: #000;
+}
+
+.header-input:hover{
+	background-color: #fff;
+}
+
+.carousel-box{
+	width: 440px;
+	height: 220px;
+	float: left;
+	border-radius: 4px;
+}
+
+.carousel-item{
+	width: 100%;
+	height: 220px;
+	line-height: 220px;
+	text-align: center;
+	color: #fff;
+	font-size: 20px;
+	background: #506b9e;
+	/*border-radius: 4px;*/
+}
+
+.chief-recommend-module .recommend-module{
+	height: 220px;
+}
+
+.clearfix{
+	overflow: auto;
+	zoom: 1;
+}
+
+.bcon-clearfix{
+	overflow: visible;
+	zoom: 1;
+}
+
+.bcon{
+	display: inline-block;
+	background-image: url("../img/system/icons.png");
+}
+
+.popularize-module{
+	padding-bottom: 15px;
+}
+
+.block-padding{
+	padding-top: 15px;
+}
+
+.popularize-module .headline{
+	padding: 0 0 15px;
+}
+
+.headline{
+	padding: 20px 0 0;
+	/*display: block;*/
+}
+
+.headline .bcon_t{
+	width: 40px;
+	height: 40px;
+	margin-right: 10px;
+	vertical-align: middle;
+	float: left;
+	/*margin-top: -10px;*/
+}
+
+.headline .bcon_t.bcon-newly{
+	background-position: -141px -75px;
+}
+
+.headline .bcon_t.bcon-rank{
+	background-position: -141px -652px;
+}
+
+.headline .bcon_t.bcon-music{
+	background-position: -140px -266px;
+}
+
+.bcon-net{
+	background-position: -141px --780px;
+}
+
+.name{
+	font-size: 24px;
+	line-height: 24px;
+	font-weight: 400;
+	margin-right: 20px;
+	float: left;
+	color: #222;
+	margin-top: 10px;
+}
+
+.storey-box{
+	height: 168px;
+	overflow: hidden;
+	/*display: block;*/
+}
+
+.spread-module{
+	position: relative;
+	width: 160px;
+	height: 148px;
+	font-size: 12px;
+	overflow: hidden;
+	float: left;
+	margin: 20px 20px 20px 15px;
+}
+
+.pic{
+	position: relative;
+	width: 160px;
+	height: 100px;
+	display: block;
+	overflow: hidden;
+	text-align: center;
+	border-radius: 4px;
+}
+
+.lazy-img{
+	width: 100%;
+	height: 100%;
+	display: inline-block;
+}
+
+.t{
+	padding-top: 8px;
+	height: 40px;
+	line-height: 20px;
+	transition: all .2s linear;
+	color: #222;
+	word-wrap: break-word;
+	word-break: break-all;
+	overflow: hidden;
+	text-align: left;
+}
+
+.spread-module a:hover .t{
+	color: #00a1d6;
+}
+
+.pagination{
+	margin-bottom: 20px;
+	margin-top: 20px;
+}
+
+.my-table{
+	overflow: auto;
+	margin-bottom: 50px;
+}
+
+.footer-center{
+	text-align: center;
+	background: #fff;
+}
+
+.article-item{
+	background: #fff;
+	border-bottom: 1px solid #f4f5f7;
+	cursor: pointer;
+}
+
+.item-holder{
+	width: 100%;
+	box-sizing: border-box;
+	padding: 20px 0;
+}
+
+.article-content{
+	position: relative;
+}
+
+.article-left-box{
+	width: 543px;
+	margin-right: 20px;
+	display: inline-box;
+	vertical-align: top;
+}
+
+.article-title-holder{
+	max-width: 100%;
+	font-size: 20px;
+	color: #212121;
+	line-height: 26px;
+	display: block;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.article-info-bar{
+	height: 24px;
+	position: relative;
+	bottom: 0;
+	vertical-align: top;
+}
+
+.up-content{
+	font-size: 0;
+	display: inline-block;
+	line-height: 20px;
+	vertical-align: top;
+	margin-right: 22px;
+}
+
+.nick-name{
+	font-size: 12px;
+	color: #99a2aa;
+	line-height: 16px;
+	vertical-align: middle;
+	max-width: 120px;
+	display: inline-block;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	white-space: nowrap;
+}
+
+.article-title{
+	transition: .3s;
+	display: inline-block;
+    vertical-align: top;
+    -webkit-box-orient: vertical;
+    word-break: break-all;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.article-title:hover{
+	color: #00a1d6;
+}
+
+.song-header{
+	height: 60px;
+	line-height: 60px;
+	font-size: 14px;
+	background-color: #fff;
+	color: #495060;
+	border-bottom: 2px solid #f4f5f7;
+}
+
+.song-info{
+	margin-top: 30px;
+	margin-bottom: 30px;
+}
+
+.song-title{
+	height: 40px;
+	line-height: 40px;
+	font-size: 18px;
+	padding-bottom: 10px;
+	border-bottom: 2px solid #f4f5f7;
+}
+
+.song-intro{
+	word-break: break-all;
+    font-size: 12px;
+    line-height: 25px;
+    margin-top: 12px;
+    color: #979797;
+    overflow: hidden;
+    padding: 20px 0 0 0;
+}
+
+.space-container{
+	margin: 0 auto;
+	padding: 0;
+	width: 1057px;
+	position: relative;
+}
+
+.space-clearfix{
+	display: block;
+}
+
+.space-col1{
+	background: #fff;
+    border: 1px solid #eee;
+    border-radius: 4px;
+    float: left;
+    padding: 15px 20px;
+    width: 700px;
+}
+
+.space-col2{
+	float: right;
+	width: 350px;
+}
+
+.section{
+	border-bottom: 1px solid #eee;
+	margin-bottom: 17px;
+	position: relative;
+}
+
+.section-title{
+	color: #000;
+	font-size: 20px;
+	font-weight: 400;
+	line-height: 33px;
+	padding: 0 0 15px;
+	position: relative;
+}
+
+.section-user{
+	background: #fff;
+    border: 1px solid #eee;
+    border-radius: 4px;
+    padding: 15px 20px 18px;
+    margin-bottom: 10px;
+}
+
+.my-collapse{
+	background-color: #fff;
+	border-radius: 3px;
+	border: 1px solid #eee
+	margin-bottom: 17px;
+}
