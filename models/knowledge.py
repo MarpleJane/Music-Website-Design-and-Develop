@@ -1,5 +1,7 @@
 #coding:utf-8
-from sqlalchemy import Column, Integer, String
+import datetime
+
+from sqlalchemy import Column, Integer, String, DateTime
 
 from models.base import ORMBase, engine
 
@@ -9,6 +11,16 @@ class Knowledge(ORMBase):
     _id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(String(64), nullable=False)
     link = Column(String(256), nullable=False)
+
+
+class Columns(ORMBase):
+    """专栏"""
+    _id = Column(Integer, primary_key=True, autoincrement=True)
+    name = Column(String(256), nullable=False)
+    author_id = Column(Integer, ForeignKey("user_info._id", name="fk_column"), nullable=False)
+    click_times = Column(Integer, nullable=False, default=0)
+    store_url = Column(String(256), nullable=False)
+    created_time = Column(DateTime, default=datetime.datetime.now)
 
 
 ORMBase.metadata.create_all(engine)

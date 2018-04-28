@@ -8,13 +8,12 @@
 // })
 
 require.config({
-	baseUrl: "statics/js"
-	path: {
-		"Vue": "vue/vue",
+	baseUrl: "/statics/js",
+	paths: {
+		"Vue": "/statics/js/vue/vue",
 		"VueResource": "vue/vue-resource",
 		"VueRouter": "vue/vue-router@3.0.1",
 		"Iview": "iview/iview2.9.2.min",
-		"Nav": "components/nav"
 	},
 	shim: {
 		Vue: {
@@ -34,3 +33,4 @@ require.config({
 		}
 	}
 })
+
