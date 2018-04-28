@@ -2,8 +2,10 @@
 import datetime
 
 from sqlalchemy import Column, Integer, String, DateTime
+from sqlalchemy.orm import relationship
 
 from models.base import ORMBase, engine
+from models.users import UserInfo
 
 
 class Knowledge(ORMBase):
@@ -21,6 +23,8 @@ class Columns(ORMBase):
     click_times = Column(Integer, nullable=False, default=0)
     store_url = Column(String(256), nullable=False)
     created_time = Column(DateTime, default=datetime.datetime.now)
+
+    user = relationship("UserInfo", backref="comments")
 
 
 ORMBase.metadata.create_all(engine)
