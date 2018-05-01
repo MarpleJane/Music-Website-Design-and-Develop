@@ -29,7 +29,9 @@ urls = [
 
     (BASE+r"index", IndexController),
     (BASE+r"song", SongController),
-    (BASE+r"space", SpaceController),
+    (BASE+r"space/([0-9]+)", SpaceController),
+    (BASE+r"space/contributes/([0-9]+)", ContributeController),
+    (BASE+r"space/columns/([0-9]+)", ColumnController),
 ]
 
 application_settings = dict(

@@ -1,0 +1,72 @@
+{% extends "./user_base.html" %}
+
+{%block header %}
+<link rel="stylesheet" href="{{ static_url('css/quill.css') }}">
+{% end %}
+
+{% block main %}
+<div id="column">
+	<div class="user-nav">
+		<div class="user-block">{{! name }}</div>
+		<router-link to="columns"><div class="test-usec">专栏</div></router-link>
+		<div v-if="yourself">
+			<router-link to="edit"><div class="test-usec">编辑</div></router-link>
+		</div>
+	</div>
+	<router-view></router-view>
+</div>
+
+<template id="columns">
+	<div class="contri-container">
+		<div class="contri"></div>
+	</div>
+</template>
+
+<template id="edit">
+	<div>
+		<!-- <div class="contri-container" style="color: white;background-color: black;padding-top: 20px"> -->
+		<div class="contri-container" style="color: white;background-color: black">
+			<div id="editor">
+				<p>HelloWorld!</p>
+			</div>
+		</div>
+		<i-button>提交</i-button>
+	</div>	
+</template>
+{% end %}
+
+{% block script %}
+<script src="{{ static_url('js/quill.js') }}"></script>
+<script>
+	Vue.use(VueRouter);
+
+	var Column = Vue.extend({
+		template: "#columns",
+	});
+
+	var Editor = Vue.extend({
+		template: "#edit",
+	})
+
+	var routes = [
+	    {path: "/", component: Column},
+	    {path: "/columns", component: Column},
+	    {path: "/edit", component: Editor}
+	];
+
+	var router = new VueRouter({routes});
+	var columns = new Vue({
+		router,
+		data: function() {
+			return {
+				name: "小栗婷",
+				yourself: true
+			}
+		}
+	}).$mount("#column");
+
+	var quill = new Quill("#editor", {
+		theme: "snow"
+	});
+</script>
+{% end %}

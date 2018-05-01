@@ -9,12 +9,24 @@ class IndexController(BaseController):
 
 
 class SongController(BaseController):
-    "song/([0-9]+)"
+    "...song/([0-9]+)"
     def get(self):  # TODO
         self.render("frontend/songpage.html")
 
 
 class SpaceController(BaseController):
-    "space/([0-9]+)"
-    def get(self):
+    "...space/([0-9]+)"
+    def get(self, user_id):
         self.render("frontend/userpage.html")
+
+
+class ContributeController(BaseController):
+    "...space/contributes/([0-9]+)"
+    def get(self, user_id):
+        self.render("frontend/contributes.html")
+
+
+class ColumnController(BaseController):
+    "...space/columns/([0-9]+)"
+    def get(self, user_id):
+        self.render("frontend/columns.html")

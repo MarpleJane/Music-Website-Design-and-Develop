@@ -1,0 +1,101 @@
+{% extends "./user_base.html" %}
+
+{% block header %}
+<style>
+	.ivu-upload-drag {
+		height: 400px;
+	}
+</style>
+{% end %}
+
+{% block main %}
+<div id="contributes">
+	<div class="user-nav">
+		<div class="user-block">{{! name }}</div>
+		<router-link to="contrib"><div class="test-usec">投稿</div></router-link>
+		<div v-if="yourself">
+			<router-link to="uploads"><div class="test-usec">上传</div></router-link>
+			<router-link to="trails"><div class="test-usec">审核</div></router-link>
+		</div>
+	</div>
+	<router-view></router-view>
+</div>
+
+<template id="contrib">
+	<div class="contri-container">
+		<div class="contri"></div>
+	</div>
+</template>
+
+<template id="uploads">
+	<div class="contri-container">
+		<div class="upload">
+			<upload type="drag" action="http://192.168.31.10/uploadMusic" :on-success="handleSuccess">
+				<div style="padding: 100px 0">
+					<icon type="ios-cloud-upload" size="100" style="color: #000"></icon>
+					<p>拖放至这里</p>
+				</div>
+			</upload>
+		</div>
+	</div>
+</template>
+
+<template id="trails">
+	<div class="contri-container">
+		<div class="contri"></div>
+	</div>
+</template>
+{% end %}
+
+{% block script %}
+<script>
+	Vue.use(VueRouter);
+
+	var Contribute = Vue.extend({
+		template: "#contrib",
+		data: function() {
+			return {
+				name: "小栗婷",
+				yourself: true,
+				songs: [
+				  {link: "/musicweb/song", pic: "{{ static_url('img/test.jpg') }}", name: "test" },
+				  {link: "/musicweb/song", pic: "{{ static_url('img/test.jpg') }}", name: "test" },
+				  {link: "/musicweb/song", pic: "{{ static_url('img/test.jpg') }}", name: "test" },
+				  {link: "/musicweb/song", pic: "{{ static_url('img/test.jpg') }}", name: "test" },
+				  {link: "/musicweb/song", pic: "{{ static_url('img/test.jpg') }}", name: "test" },
+				  {link: "/musicweb/song", pic: "{{ static_url('img/test.jpg') }}", name: "test" },
+				]
+			}
+		}
+	});
+
+	var Upload = Vue.extend({
+		template: "#uploads",
+		methods: {
+			handleSuccess: function() {}
+		}
+	});
+
+	var Trail = Vue.extend({
+		template: "#trails",
+	});
+
+	var routes = [
+	    {path: "/", component: Contribute},
+	    {path: "/contrib", component: Contribute},
+	    {path: "/uploads", component: Upload},
+	    {path: "/trails", component: Trail}
+	];
+
+	var router = new VueRouter({routes});
+	var contributes = new Vue({
+		router,
+		data: function() {
+			return {
+				name: "小栗婷",
+				yourself: true
+			}
+		}
+	}).$mount("#contributes");
+</script>
+{% end %}

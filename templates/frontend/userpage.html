@@ -17,10 +17,10 @@
 			</div>
 			<div class="usection-container fadeInUp">
 			    <div class="test-usec">简介<br>简介<br>简介</div>	
-				<a target="_blank"><div class="test-usec">投稿</div></a>
-				<a target="_blank"><div class="test-usec">专栏</div></a>
-				<a target="_blank"><div class="test-usec">收藏</div></a>
-				<a target="_blank" v-if="myself"><div class="test-usec">设置</div></a>
+				<a target="_blank" :href="'/musicweb/space/contributes/' + user_id"><div class="test-usec">投稿</div></a>
+				<a target="_blank" :href="'/musicweb/space/columns/' + user_id"><div class="test-usec">专栏</div></a>
+				<!-- <a target="_blank" :href="'/musicweb/space/collections/' + user_id"><div class="test-usec">收藏</div></a> -->
+				<a target="_blank" v-if="myself" :href="'/musicweb/space/settings/' + user_id"><div class="test-usec">设置</div></a>
 				<a href="javascript:window.close()"><div class="test-usecr">退出</div></a>
 			</div>
 		</div>
@@ -70,7 +70,8 @@
 		el: "#user",
 		data: function() {
 			return {
-				myself: false
+				myself: true,
+				user_id: "0000",
 			}
 		}
 	});
