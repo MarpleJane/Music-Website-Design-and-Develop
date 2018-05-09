@@ -32,6 +32,14 @@ urls = [
     (BASE+r"space/([0-9]+)", SpaceController),
     (BASE+r"space/contributes/([0-9]+)", ContributeController),
     (BASE+r"space/columns/([0-9]+)", ColumnController),
+    (BASE+r"space/columns/([0-9]+)/edit", ColumnEditController),
+    (BASE+r"space/settings/([0-9]+)", SettingController),
+    (BASE+r"signin", FrontSigninController),
+    (BASE+r"signup", FrontSignupController),
+    (BASE+r"logout", FrontLogoutController),
+
+    (r"/api/userinfochange/([0-9]+)", UserInfoChangeController),
+    (r"/api/spiderindex", SpiderIndexController),
 ]
 
 application_settings = dict(

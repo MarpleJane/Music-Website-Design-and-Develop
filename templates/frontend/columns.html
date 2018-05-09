@@ -10,7 +10,8 @@
 		<div class="user-block">{{! name }}</div>
 		<router-link to="columns"><div class="test-usec">专栏</div></router-link>
 		<div v-if="yourself">
-			<router-link to="edit"><div class="test-usec">编辑</div></router-link>
+			<!-- <router-link to="edit"><div class="test-usec">编辑</div></router-link> -->
+			<a :href="'/musicweb/space/columns/'+user_id+'/edit'"><div class="test-usec">编辑</div></a>
 		</div>
 	</div>
 	<router-view></router-view>
@@ -18,20 +19,8 @@
 
 <template id="columns">
 	<div class="contri-container">
-		<div class="contri"></div>
+		<div class="contri" style="background: black;"></div>
 	</div>
-</template>
-
-<template id="edit">
-	<div>
-		<!-- <div class="contri-container" style="color: white;background-color: black;padding-top: 20px"> -->
-		<div class="contri-container" style="color: white;background-color: black">
-			<div id="editor">
-				<p>HelloWorld!</p>
-			</div>
-		</div>
-		<i-button>提交</i-button>
-	</div>	
 </template>
 {% end %}
 
@@ -60,13 +49,11 @@
 		data: function() {
 			return {
 				name: "小栗婷",
+				user_id: "0000",
 				yourself: true
 			}
 		}
 	}).$mount("#column");
 
-	var quill = new Quill("#editor", {
-		theme: "snow"
-	});
 </script>
 {% end %}

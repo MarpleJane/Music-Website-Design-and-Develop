@@ -2,8 +2,46 @@
 
 {% block header %}
 <style>
-	.ivu-upload-drag {
-		height: 400px;
+	.ivu-page-item-active {
+		background-color: #000;
+		border-color: #000;
+	}
+	.ivu-page-item:hover {
+	    border-color: #000;
+	    /*color: #000;*/
+	}
+	.ivu-page-next:hover, .ivu-page-prev:hover {
+	    border-color: #000;
+	}
+
+	.user-form {
+    	margin-left: 180px;
+    	margin-top: 50px;
+    }
+
+    .ivu-form .ivu-form-item-label {
+    	color: #fff;
+    	font-size: 14px;
+    }
+
+    .ivu-input-wrapper {
+    	width: 60%;
+    }
+
+    .ivu-radio-group label {
+    	color: #fff;
+    }
+
+    .ivu-radio-checked .ivu-radio-inner {
+		border-color: #000;
+	}
+
+	.ivu-radio-checked:hover .ivu-radio-inner {
+	    border-color: #000;
+	}
+
+	.ivu-radio-inner:after {
+	    background-color: #000;
 	}
 </style>
 {% end %}
@@ -11,7 +49,7 @@
 {% block main %}
 <div id="contributes">
 	<div class="user-nav">
-		<div class="user-block">{{! name }}</div>
+		<div class="user-block">{{! username }}</div>
 		<router-link to="contrib"><div class="test-usec">投稿</div></router-link>
 		<div v-if="yourself">
 			<router-link to="uploads"><div class="test-usec">上传</div></router-link>
@@ -23,26 +61,85 @@
 
 <template id="contrib">
 	<div class="contri-container">
-		<div class="contri"></div>
+		<div class="contri">
+			<div style="display: inline-block;margin-left: 20px;">
+				<song-list
+			      v-for="item in songs"
+			      v-bind:song="item"
+			      v-bind:key="item.id">
+			    </song-list>
+			</div>
+			
+		    <div style="position: absolute;bottom:5px;margin:0 auto; display: inline-block;">
+		    <!-- <div align="center" class="pagination"> -->
+				<page :current="current" :total="total" :page-size="pageSize" @on-change="changePage"></page>
+			</div>
+		</div>
 	</div>
 </template>
 
 <template id="uploads">
 	<div class="contri-container">
-		<div class="upload">
-			<upload type="drag" action="http://192.168.31.10/uploadMusic" :on-success="handleSuccess">
-				<div style="padding: 100px 0">
-					<icon type="ios-cloud-upload" size="100" style="color: #000"></icon>
-					<p>拖放至这里</p>
-				</div>
+		<div class="contri" style="background:rgba(0, 0, 0, 0.8); padding-top:40px; border-radius:8px;">
+			<upload ref="music" :before-upload="musicUpload" action="http://192.168.31.10/uploadMusic">
+				<i-button icon="ios-cloud-upload-outline">传音频</i-button>
 			</upload>
+			<upload ref="cover" :before-upload="coverUpload" action="http://192.168.31.10/uploadMusic">
+				<i-button icon="ios-cloud-upload-outline">传封面</i-button>
+			</upload>
+			<div v-for="(item, index) in files" style="color:white;">upload file: {{! item.name }}
+				<a href="javascript:;" @click="delFile(item.keyID)" style="color:#f0532d;">X</a>
+			</div>
+			
+			<div class="user-form">
+				<i-form :model="formItem" :label-width="80">
+					<form-item label="歌曲名">
+						<i-input v-model="formItem.songName"></i-input>
+					</form-item>
+					<form-item label="作者">
+						<i-input v-model="formItem.artist"></i-input>
+					</form-item>
+					<form-item label="简介">
+						<i-input v-model="formItem.desc" type="textarea" :autosize="{minRows:2, maxRows:3}"></i-input>
+					</form-item>
+					<form-item label="投稿类型">
+						<radio-group v-model="formItem.radio">
+							<radio label="1">原创</radio>
+							<radio label="2">非原创</radio>
+						</radio-group>
+					</form-item>
+					<form-item label="风格类型">
+						<radio-group v-model="formItem.musicType">
+							<radio label="1">中文</radio>
+							<radio label="2">轻音乐</radio>
+							<radio label="3">爵士</radio>
+							<radio label="4">日文</radio>
+							<radio label="5">英文</radio>
+						</radio-group>
+					</form-item>
+				</i-form>
+			</div>
+			<i-button style="margin-left:30px;" size="small" v-if="music && cover && formItem.songName && formItem.artist" @click="upload">提交稿件</i-button>
 		</div>
 	</div>
 </template>
 
 <template id="trails">
 	<div class="contri-container">
-		<div class="contri"></div>
+		<div class="contri" style="background:black;"></div>
+	</div>
+</template>
+
+<template id="song-list">
+	<div class="spread-module" style="margin-bottom: 10px">
+		<a :href="song.link" target="_blank">
+			<div class="pic">
+				<div class="lazy-pic">
+					<img :src="song.pic" :alt="song.name" :title="song.name">
+				</div>
+			</div>
+			<p class="t" style="font-size:15px;font-weight:700;" :title="song.name">{{! song.name }}</p>
+		</a>
 	</div>
 </template>
 {% end %}
@@ -55,8 +152,11 @@
 		template: "#contrib",
 		data: function() {
 			return {
-				name: "小栗婷",
-				yourself: true,
+				// name: "小栗婷",
+				yourself: false,
+				current: 1,
+				total: 6,
+				pageSize: 2,
 				songs: [
 				  {link: "/musicweb/song", pic: "{{ static_url('img/test.jpg') }}", name: "test" },
 				  {link: "/musicweb/song", pic: "{{ static_url('img/test.jpg') }}", name: "test" },
@@ -64,20 +164,115 @@
 				  {link: "/musicweb/song", pic: "{{ static_url('img/test.jpg') }}", name: "test" },
 				  {link: "/musicweb/song", pic: "{{ static_url('img/test.jpg') }}", name: "test" },
 				  {link: "/musicweb/song", pic: "{{ static_url('img/test.jpg') }}", name: "test" },
-				]
+				  {link: "/musicweb/song", pic: "{{ static_url('img/test.jpg') }}", name: "test" },
+				  {link: "/musicweb/song", pic: "{{ static_url('img/test.jpg') }}", name: "test" },
+				  {link: "/musicweb/song", pic: "{{ static_url('img/test.jpg') }}", name: "test" },
+				  {link: "/musicweb/song", pic: "{{ static_url('img/test.jpg') }}", name: "test" },
+				  {link: "/musicweb/song", pic: "{{ static_url('img/test.jpg') }}", name: "test" },
+				  {link: "/musicweb/song", pic: "{{ static_url('img/test.jpg') }}", name: "test" },
+				],
+			}
+		},
+		methods: {
+			changePage: function(page) {
+				console.log(page);
 			}
 		}
 	});
 
 	var Upload = Vue.extend({
 		template: "#uploads",
+		data: function() {
+			return {
+				files: [],
+				music: false,
+				cover: false,
+				formItem: {
+					songName: "",
+					artist: "",
+					radio: "1",
+					musicType: "1",
+					desc: "",
+				}
+			}
+		},
 		methods: {
-			handleSuccess: function() {}
+			handleSuccess: function() {},
+			handleUpload: function(file) {
+				var keyID = Math.random().toString().substr(2);
+				file["keyID"] = keyID;
+				this.files.push(file);
+				return false;
+			},
+			musicUpload: function(file) {
+				var keyID = Math.random().toString().substr(2);
+				file["uploadType"] = "music";
+				file["keyID"] = keyID;
+				this.files.push(file);
+				this.music = true;
+				return false;
+			},
+			coverUpload: function(file) {
+				var keyID = Math.random().toString().substr(2);
+				file["uploadType"] = "cover";
+				file["keyID"] = keyID;
+				this.files.push(file);
+				this.cover = true;
+				return false;
+			},
+			delFile: function(keyID) {
+				this.files = this.files.filter(function(item) {
+					return item.keyID != keyID;
+				});
+				musicFile = this.files.filter(function(item) {
+					console.log(item.uploadType);
+					return item.uploadType == "music";
+				});
+				coverFile = this.files.filter(function(item) {
+					return item.uploadType == "cover";
+				});
+				if (musicFile.length == 0) {
+					this.music = false;
+				}
+				if (coverFile.length == 0) {
+					this.cover = false;
+				}
+			},
+			upload: function() {
+				if (this.files.length == 0) {
+					this.$Message.error("少上传了");
+					return false;
+				}
+				var uploadFiles = this.files.concat();
+				this.files = [];
+				this.music = false;
+				this.cover = false;
+				var count = 0;
+				for (var i = 0; i < uploadFiles.length; i ++) {
+					var item = uploadFiles[i];
+					if (count == 2) {
+						break;
+					}
+					if (item.uploadType == "music") {
+						count ++;
+						this.$refs.music.post(item);
+					}
+					if (item.uploadType == "cover") {
+						count ++;
+						this.$refs.cover.post(item);
+					}
+				}
+			}
 		}
 	});
 
 	var Trail = Vue.extend({
 		template: "#trails",
+	});
+
+	var SongList = Vue.component("song-list", {
+		props: ["song"],
+		template: "#song-list"
 	});
 
 	var routes = [
@@ -92,8 +287,23 @@
 		router,
 		data: function() {
 			return {
-				name: "小栗婷",
-				yourself: true
+				username: "",
+				space_id: "",
+				yourself: false,
+			}
+		},
+		created: function() {
+			this.fetchData();
+		},
+		methods: {
+			fetchData: function() {
+				var that = this;
+				this.$http.post("/musicweb/space/contributes/" + {{ space_id }}
+				).then(function(response) {
+					that.username = response.body.username;
+					that.space_id = response.body.space_id;
+					that.yourself = response.body.yourself;
+				})
 			}
 		}
 	}).$mount("#contributes");

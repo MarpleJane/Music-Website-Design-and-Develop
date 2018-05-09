@@ -13,7 +13,7 @@ class UserLogin(ORMBase):
     account = Column(String(64), nullable=False)
     password = Column(String(128), nullable=False)
     info = relationship("UserInfo")
-    upload_songs = relationship("Songs", backref="uploader")
+    upload_songs = relationship("Songs")
 
 
 class UserInfo(ORMBase):

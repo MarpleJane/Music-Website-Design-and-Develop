@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Wuliwuli</title>
+	<link rel="stylesheet" type="text/css" href="https://cdn.bootcss.com/iview/2.13.1/styles/iview.css">
+	<link rel="stylesheet" href="{{ static_url('css/mycss.css') }}">
+	<style>
+        .ivu-form .ivu-form-item-label {
+        	color: #fff;
+        	font-size: 14px;
+        }
+        .ivu-input-wrapper {
+        	width: 60%;
+        }
+        .user-form {
+        	margin-left: 180px;
+        	margin-top: 50px;
+        	animation: fadeInUp 1.2s linear;
+        }
+	</style>
+</head>
+<body background="{{ static_url('img/system/setting_background.jpg') }}" style="background-attachment: fixed;">
+	<div id="setting" style="width:966px; min-height:768px; background:rgba(0, 0, 0, 0.8); margin:0 auto; padding:20px;">
+		<div style="">
+			<div class="demo-avatar">
+				<avatar icon="person" size="large" style="width:80px; height:80px; line-height:80px; border-radius:40px;"></avatar>
+				<upload action="">
+					<i-button style="margin:0 auto; margin-top:10px; display:block;">修改头像</i-button>
+				</upload>
+			</div>
+
+			<div class="user-form">
+				<i-form :model="formItem" :label-width="80">
+					<form-item label="昵称">
+						<i-input v-model="formItem.nickname"></i-input>
+					</form-item>
+					<form-item label="简介">
+						<i-input v-model="formItem.desc" type="textarea" :autosize="{minRows:2, maxRows:3}"></i-input>
+					</form-item>
+					<form-item>
+						<i-button style="margin:0 auto;" @click="changeInfo">提交</i-button>
+					</form-item>
+				</i-form>
+			</div>
+			
+		</div>
+	</div>
+	<script src="{{ static_url('js/vue/vue.js') }}"></script>
+	<script src="{{ static_url('js/iview/iview2.9.2.min.js') }}"></script>
+	<script src="{{ static_url('js/vue/vue-resource.js') }}"></script>
+	<script src="{{ static_url('js/vue/vue-router@3.0.1.js') }}"></script>
+	<script>
+		var setting = new Vue({
+			el: "#setting",
+			data: function() {
+				return {
+					formItem: {
+						nickname: "",
+						desc: "",
+						avatar: ""
+					}
+				}
+			},
+			created: function() {
+				this.fetchData();
+			},
+			methods: {
+				fetchData: function() {
+					var that = this;
+					this.$http.post("/musicweb/space/settings/" + {{ user_id }}
+					).then(function(response) {
+						that.formItem.nickname = response.body.username;
+						that.formItem.desc = response.body.desc;
+						that.formItem.avatar = response.body.avatar;
+					}, function(response) {
+						alert("error");
+					})
+				},
+				changeInfo: function() {
+					var that = this;
+					this.$http.post("/api/userinfochange/" + {{ user_id }},
+					  {username: that.formItem.nickname, desc: that.formItem.desc, avatar: that.formItem.avatar},
+					  {emulateJSON: true}
+					).then(function(response) {
+						var ret = response.body.ret;
+						if (ret == 0) {
+							that.$Message.success("修改成功");
+						}
+					}, function(response) {
+						alert("error");
+					})
+				}
+			}
+		})
+	</script>
+</body>
+</html>

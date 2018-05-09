@@ -2,12 +2,21 @@
 
 {% block header %}
 <link rel="stylesheet" href="{{ static_url('css/aplayer/APlayer.min.css') }}">
+<style>
+	a {
+		color: #f02d2d;
+	}
+	a:active, a:hover {
+		color: #f02d2d;
+	}
+</style>
 {% end %}
 
 {% block main %}
 <div id="song" class="layout-sub-container">
 	<div class="song-header">
-		<h1>Sugar Song To Bitter Step</h1>
+		<!-- <h1>Sugar Song To Bitter Step</h1> -->
+		<h1>{{! songInfo.name }}</h1>
 	</div>
 
     <div class="block-padding">
@@ -17,13 +26,18 @@
     <div class="song-info">
     	<div class="song-title">
     		<span>音频简介</span>
-    		<span style="float:right">下载</span>
     	</div>
     	<div class="song-intro">
     		<div><span>音频名：</span><span>{{! songInfo.name }}</span></div>
     		<div><span>作者：</span><span>{{! songInfo.artist }}</span></div>
     		<div><span>投稿者：</span><span><a :href="'/musicweb/space/' + songInfo.uploader.id">{{! songInfo.uploader.name }}</a></span></div>
     		<div><span>简介：</span><span>{{! songInfo.desc }}</span></div>
+    		<div>
+    			<a href="">
+    				<i class="pcon pcon_t pcon-download" style="margin-right:0px"></i>
+    				<p class="name">下载</p>
+    			</a>
+    		</div>
     	</div>
     </div>
 

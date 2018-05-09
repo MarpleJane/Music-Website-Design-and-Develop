@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Wuliwuli</title>
+	<link rel="stylesheet" type="text/css" href="https://cdn.bootcss.com/iview/2.13.1/styles/iview.css">
+	<link rel="stylesheet" href="{{ static_url('css/quill.css') }}">
+	<link rel="stylesheet" href="{{ static_url('css/mycss.css') }}">
+	<style>
+		.ui-input-textarea {
+		    position: relative;
+		    display: inline-block;
+		    transition: color .2s ease,background-color .2s ease,border-color .2s ease;
+		    border: 1px solid #ccd0d7;
+		    outline: 0;
+		    border-radius: 4px;
+		    overflow: hidden;
+		    padding: 7px 12px 35px;
+		    cursor: text;
+		}
+		.ui-input-textarea textarea {
+		    width: 100%;
+		    height: 100%;
+		    font-size: 14px;
+		    line-height: 1.4;
+		    border: 0;
+		    background-color: transparent;
+		    outline: none;
+		    resize: none;
+		    text-align: justify;
+		}
+		.article-title {
+		    width: 100%;
+		    margin-bottom: 18px;
+		    border: none;
+		    padding: 0;
+		    display: block;
+		}
+		.article-title input, .article-title textarea {
+		    border: 0;
+		    font-size: 28px;
+		    padding: 12px 50px 12px 0;
+		    font-weight: 700;
+		    line-height: 40px;
+		}
+	</style>
+</head>
+<body background="{{ static_url('img/system/edit_background.jpg') }}" style="background-attachment: fixed;">
+	<div style="width:966px; min-height:768px; background:#fff; margin:0 auto; padding:20px;">
+		<div class="ui-input-textarea article-title" type="text">
+			<textarea maxlength placeholder="请输入标题" style="overflow-y:hidden;height:64px" id="title"></textarea>
+		</div>
+		<div id="editor" style="min-height: 600px;">
+			<p>HelloWorld!</p>
+		</div>
+		<div id="column">
+			<i-button @click="uploadHTML()">提交</i-button>
+		</div>
+	</div>
+	<script src="{{ static_url('js/vue/vue.js') }}"></script>
+	<script src="{{ static_url('js/iview/iview2.9.2.min.js') }}"></script>
+	<script src="{{ static_url('js/vue/vue-resource.js') }}"></script>
+	<script src="{{ static_url('js/quill.js') }}"></script>
+	<script>
+		var quill = new Quill("#editor", {
+			theme: "snow"
+		});
+
+		var column = new Vue({
+			el: "#column",
+			data: function() {
+				return {}
+			},
+			methods: {
+				uploadHTML: function() {
+					console.log(quill.container.firstChild.innerHTML);
+					console.log(document.getElementById("title").value);
+				}
+			}
+		});
+	</script>
+</body>
+</html>

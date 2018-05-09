@@ -1,35 +1,54 @@
 {% extends "./base.html" %}
 
+{% block header %}
+<style>
+	.link-button {
+		margin-left: 20px;
+	}
+	.ivu-page-item-active {
+		background-color: #000;
+		border-color: #000;
+	}
+	.ivu-page-item:hover {
+	    border-color: #000;
+	    /*color: #000;*/
+	}
+	.ivu-page-next:hover, .ivu-page-prev:hover {
+	    border-color: #000;
+	}
+</style>
+{% end %}
+
 {% block main %}
 
 <div id="subnav" class="layout-sub-container">
-	<i-menu mode="horizontal" theme="light" class="my-horizontal" active-name="home">
+	<i-menu mode="horizontal" theme="dark" class="my-horizontal" active-name="home">
 		<div class="layout-sub-inner">
-			<menu-item name="home">
-				<router-link to="/home">
+			<router-link to="/home">
+				<menu-item name="home">
 					首页
-				</router-link>
-			</menu-item>
-			<menu-item name="rank">
-				<router-link to="/spider">
+				</menu-item>
+			</router-link>
+			<router-link to="/spider">
+				<menu-item name="rank">
 					排行
-				</router-link>
-			</menu-item>
-			<menu-item name="newly">
-				<router-link to="/newly-upload">
-					最新
-				</router-link>
-			</menu-item>
-			<menu-item name="type">
-				<router-link to="/music">
+				</menu-item>
+			</router-link>
+			<router-link to="/diy">
+				<menu-item name="diy">
+					原创
+				</menu-item>
+			</router-link>
+			<router-link to="/music">
+				<menu-item name="type">
 					音乐
-				</router-link>
-			</menu-item>
-			<menu-item name="column">
-				<router-link to="/column">
+				</menu-item>
+			</router-link>
+			<router-link to="/column">
+				<menu-item name="column">
 					专栏
-				</router-link>
-			</menu-item>
+				</menu-item>
+			</router-link>
 		</div>
 	</i-menu>
 	<router-view></router-view>
@@ -63,10 +82,14 @@
 						排行
 					</p>
 					<ul>
-						<li v-for="item in rankList">
+						<!-- <li v-for="item in rankList">
 							<a :href="item.url" target="_blank">{{! item.name }}</a>
 							<span class="bcon bcon-net"></span>
-						</li>
+						</li> -->
+						<rank-list v-for="item in rankList"
+						           v-bind:rank="item"
+						           v-bind:key="item.id">
+						</rank-list>
 					</ul>
 				</card>
 			</div>
@@ -74,7 +97,8 @@
 
 		<div>
 			<div class="headline clearfix">
-				<i class="bcon bcon_t bcon-newly"></i>
+				<!-- <i class="bcon bcon_t bcon-newly"></i> -->
+				<i class="pcon pcon_t pcon-music"></i>
 				<p class="name">最新</p>
 			</div>
 			<div class="storey-box">
@@ -87,8 +111,9 @@
 		</div>
 
 		<div class="headline clearfix">
-			<i class="bcon bcon_t bcon-rank"></i>
-			<p class="name">最热</p>
+			<!-- <i class="bcon bcon_t bcon-rank"></i> -->
+			<i class="pcon pcon_t pcon-music"></i>
+			<p class="name">原创</p>
 		</div>
 		<div class="storey-box">
 			<song-list
@@ -99,7 +124,8 @@
 		</div>
 
 		<div class="headline clearfix">
-			<i class="bcon bcon_t bcon-music"></i>
+			<!-- <i class="bcon bcon_t bcon-music"></i> -->
+			<i class="pcon pcon_t pcon-music"></i>
 			<p class="name">音乐</p>
 		</div>
 		<div class="storey-box">
@@ -116,16 +142,22 @@
 	<div class="block-padding">
 		<tabs type="card" v-model="current" @on-click="showCurrent">
 			<tab-pane label="交集" name=0>
-				<spider-table v-bind:spider="spider"></spider-table>
+				<spider-union v-bind:rank="rankList"></spider-union>
 			</tab-pane>
-			<tab-pane label="网易" name=1>网易的内容</tab-pane>
-			<tab-pane label="qq" name=2>qq的内容</tab-pane>
-			<tab-pane label="酷狗" name=3>酷狗的内容</tab-pane>
+			<tab-pane label="网易" name=1>
+				<spider-table v-bind:spider="spiderList"></spider-table>
+			</tab-pane>
+			<tab-pane label="QQ" name=2>
+				<spider-table v-bind:spider="spiderList"></spider-table>
+			</tab-pane>
+			<tab-pane label="酷狗" name=3>
+				<spider-table v-bind:spider="spiderList"></spider-table>
+			</tab-pane>
 		</tabs>
 	</div>
 </template>
 
-<template id="newly-upload">
+<template id="diy">
 	<div>
 		<div class="block-padding clearfix">
 			<song-list
@@ -174,7 +206,13 @@
 
 <template id="spider-table">
 	<div class="block-padding my-table">
-		<i-table size="large" :columns="fixedColumn" :data="spider.spiderList"></i-table>
+		<i-table size="large" :columns="fixedColumn" :data="spider"></i-table>
+	</div>
+</template>
+
+<template id="spider-union">
+	<div class="block-padding my-table">
+		<i-table size="large" :columns="fixedColumn" :data="rank"></i-table>
 	</div>
 </template>
 
@@ -203,6 +241,19 @@
 	</div>
 </template>
 
+<template id="rank-list">
+	<li style="margin-bottom:2px; margin-left:5px">
+		<div style="width:50%; text-overflow:ellipsis; display:inline-block;">
+			{{! rank.name }} - {{! rank.author }}
+		</div>
+		<div style="display:inline-block;" v-for="(item, index) in rank.link_info">
+			<a v-if="item.dsp_id==1" :href="item.link" target="_blank"><i-button size="small" class="link-button">网易</i-button></a>
+			<a v-if="item.dsp_id==2" :href="item.link" target="_blank"><i-button size="small" class="link-button">QQ</i-button></a>
+			<a v-if="item.dsp_id==3" :href="item.link" target="_blank"><i-button size="small" class="link-button">酷狗</i-button></a>
+		</div>
+	</li>
+</template>
+
 {% end %}
 
 {% block script %}
@@ -214,6 +265,11 @@
 		template: "#song-list"
 	});
 
+	var RankList = Vue.component("rank-list", {
+		props: ["rank"],
+		template: "#rank-list"
+	});
+
 	var SpiderTable = Vue.component("spider-table", {
 		props: ["spider"],
 		template: "#spider-table",
@@ -223,16 +279,16 @@
 				fixedColumn: [
 				  { title: "排名", key: "rank", sortable: true },
 				  { title: "歌名", key: "name" },
-				  { title: "作者", key: "singer" },
+				  { title: "作者", key: "author" },
 				  { title: "链接", key: "link",
 				    render: function(h, params) {
 				    	var linkNum = params.row.link.length;
 				    	var hArray = new Array();
-				    	if (linkNum == 1) {
+				    	var mapName = {"1": "网易", "2": "QQ", "3": "酷狗"};
+				    	// if (linkNum == 1) {
 				    		hArray.push(
 				    			h("Button", {
 				    			   props: {
-				    			   	   type: "primary",
 				    			   	   size: "small"
 				    			   },
 				    			   style: {
@@ -240,37 +296,76 @@
 				    			   },
 				    			   on: {
 				    			   	   click: function() {
-				    			   	   	 this.show(params.index);
+				    			   	   	 // this.show(params.index);
+				    			   	   	 window.open(params.row.link);
 				    			   	   }
 				    			   }
-				    			}, that.spider.name))
-				    	} else {
-				    		var mapName = ["网易", "qq", "酷狗"];
-				    		for (var i = 0; i < linkNum; i ++) {
-				    			hArray.push(
-				    				h("Button", {
-				    					props: {
-				    						type: "primary",
-				    						size: "small",
-				    						disabled: !Boolean(params.row.link[i])
-				    					},
-				    					style: {
-				    						marginRight: '5px'
-				    					},
-				    					on: {
-				    						click: function() {
-				    							this.show(params.index);
-				    						}
-				    					}
-				    				}, mapName[i]))
-				    		}
-				    	}
+				    			}, mapName[params.row.dsp_id.toString()]))
+				    	// } else {
+				    	// 	var mapName = ["网易", "qq", "酷狗"];
+				    	// 	for (var i = 0; i < linkNum; i ++) {
+				    	// 		hArray.push(
+				    	// 			h("Button", {
+				    	// 				props: {
+				    	// 					size: "small",
+				    	// 					// disabled: !Boolean(params.row.link[i])
+				    	// 				},
+				    	// 				style: {
+				    	// 					marginRight: '5px'
+				    	// 				},
+				    	// 				on: {
+				    	// 					click: function() {
+				    	// 						// this.show(params.index);
+				    	// 						window.open(params.row.link_info[i].link);
+				    	// 					}
+				    	// 				}
+				    	// 			}, mapName[params.row.link_info[i].dsp_id.toString()]))
+				    	// 	}
+				    	// }
 				    	return h("div", hArray);
 				    } },
 				]
 			};
 		}
 	});
+
+	var SpiderUnion = Vue.component("spider-union", {
+		props: ["rank"],
+		template: "#spider-union",
+		data: function() {
+			var that = this;
+			return {
+				fixedColumn: [
+				  {title: "歌名", key: "name"},
+				  {title: "作者", key: "author"},
+				  {title: "链接", key: "link",
+				    render: function(h, params) {
+				    	var linkNum = params.row.link_info.length;
+				    	var hArray = new Array();
+				    		var mapName = {"1": "网易", "2": "QQ", "3": "酷狗"};
+				    		for (let i = 0; i < linkNum; i ++) {
+				    			hArray.push(
+				    				h("Button", {
+				    					props: {
+				    						size: "small",
+				    					},
+				    					style: {
+				    						marginRight: '5px'
+				    					},
+				    					on: {
+				    						click: function() {
+				    							window.open(params.row.link_info[i].link);
+				    						}
+				    					}
+				    				}, mapName[params.row.link_info[i].dsp_id.toString()]))
+				    		}
+				    	return h("div", hArray);
+				    }
+				  },
+				]
+			}
+		}
+	})
 
 	var MusicTable = Vue.component("music-table", {
 		props: ["songList"],
@@ -296,14 +391,26 @@
 		template: "#home",
 		data: function() {
 			return{
-				rankList: [
-			        {url: "www.baidu.com", name: "aaa"}
-			    ],
+				rankList: [],
 			    songs:[{
 			    	link: "/musicweb/song",
 			    	pic: "{{ static_url('img/test.jpg') }}",
 			    	name: "test"
 			    },]
+			}
+		},
+		created: function() {
+			this.fetchData();
+		},
+		methods: {
+			fetchData: function() {
+				var that = this;
+				this.$http.get("/api/spiderindex"
+				).then(function(response) {
+					that.rankList = response.body.union_list.slice(0,5);
+				}, function(response) {
+					alert("error");
+				})
 			}
 		}
 	});
@@ -321,18 +428,41 @@
 					  { rank: 3, name: "果", singer: "兄弟", link: ["www.baidu.com", "", "www.google.com"] },
 					  { rank: 4, name: "ppap", singer: "pikotaro", link: ["www.baidu.com", "wwww.google.com", "www.yahoo.com"] },
 					]
-				}
+				},
+				rankList: [],
+				spiderList: []
 			};
+		},
+		created: function() {
+			this.fetchData();
 		},
 		methods: {
 			showCurrent: function() {
 				console.log(this.current);
+				var that = this;
+				this.$http.post("/api/spiderindex",
+				    {dsp_id: that.current},
+				    {emulateJSON: true}
+				).then(function(response) {
+					that.spiderList = response.body.spider_list;
+				}, function(response) {
+					alert("error");
+				})
+			},
+			fetchData: function() {
+				var that = this;
+				this.$http.get("/api/spiderindex"
+				).then(function(response) {
+					that.rankList = response.body.union_list;
+				}, function(response) {
+					alert("error");
+				})
 			}
 		}
 	});
 
-	var NewlyUpload = Vue.extend({
-		template: "#newly-upload",
+	var Diy = Vue.extend({
+		template: "#diy",
 		data: function() {
 			return {
 				current: 1,
@@ -409,7 +539,7 @@
 	  {path: "/", component: Home},
 	  {path: "/home", component: Home},
 	  {path: "/spider", component: Spider},
-	  {path: "/newly-upload", component: NewlyUpload},
+	  {path: "/diy", component: Diy},
 	  {path: "/music", component: Music},
 	  {path: "/column", component: Column}
 	];

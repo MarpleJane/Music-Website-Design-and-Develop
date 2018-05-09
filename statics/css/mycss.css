@@ -1,6 +1,6 @@
-/*body{
+body{
 	background-color: #111;
-}*/
+}
 
 .layout{
 	/*border: 1px solid #d7dde4;*/
@@ -8,7 +8,7 @@
 	border-bottom: 2px solid #cd3333;
 	position: relative;
 	border-radius: 4px;
-	overflow: hidden;
+	/*overflow: hidden;*/
 }
 
 .layout-logo{
@@ -25,7 +25,7 @@
 .layout-nav{
 	width: 420px;
 	margin: 0px auto;
-	margin-right: -150px;
+	margin-right: -10px;
 	/*margin-left: 5px;*/
 }
 
@@ -50,7 +50,7 @@
 	width: 100%;
 	height: 150px;
 	margin: 0 auto;
-	background-image: url("../img/system/banner.png");
+	background-image: url("../img/system/banner2.png");
 	background-position: center -10px;
 	background-repeat: no-repeat;
 }
@@ -125,6 +125,11 @@
 	background-image: url("../img/system/icons.png");
 }
 
+.pcon{
+	display: inline-block;
+	background-image: url("../img/system/icon2.png");
+}
+
 .popularize-module{
 	padding-bottom: 15px;
 }
@@ -151,6 +156,14 @@
 	/*margin-top: -10px;*/
 }
 
+.pcon_t{
+	width: 50px;
+	height: 50px;
+	margin-right: 10px;
+	vertical-align: middle;
+	float: left;
+}
+
 .headline .bcon_t.bcon-newly{
 	background-position: -141px -75px;
 }
@@ -163,6 +176,14 @@
 	background-position: -140px -266px;
 }
 
+.headline .pcon_t.pcon-music{
+	background-position: -100px -100px;
+}
+
+.pcon_t.pcon-download{
+	background-position: -100px -197px;
+}
+
 .bcon-net{
 	background-position: -141px --780px;
 }
@@ -173,7 +194,8 @@
 	font-weight: 400;
 	margin-right: 20px;
 	float: left;
-	color: #222;
+	/*color: #222;*/
+	color: #eee;
 	margin-top: 10px;
 }
 
@@ -214,7 +236,7 @@
 	height: 40px;
 	line-height: 20px;
 	transition: all .2s linear;
-	color: #222;
+	color: #eee;
 	word-wrap: break-word;
 	word-break: break-all;
 	overflow: hidden;
@@ -237,7 +259,8 @@
 
 .footer-center{
 	text-align: center;
-	background: #fff;
+	background: #111;
+	color: #fff;
 }
 
 .article-item{
@@ -320,8 +343,8 @@
 	height: 60px;
 	line-height: 60px;
 	font-size: 14px;
-	background-color: #fff;
-	color: #495060;
+	background-color: #111;
+	color: #eee;
 	border-bottom: 2px solid #f4f5f7;
 }
 
@@ -334,6 +357,7 @@
 	height: 40px;
 	line-height: 40px;
 	font-size: 18px;
+	color: #eee;
 	padding-bottom: 10px;
 	border-bottom: 2px solid #f4f5f7;
 }
@@ -343,7 +367,8 @@
     font-size: 12px;
     line-height: 25px;
     margin-top: 12px;
-    color: #979797;
+    /*color: #979797;*/
+    color: #eee;
     overflow: hidden;
     padding: 20px 0 0 0;
 }
@@ -456,22 +481,30 @@
 }
 
 .test-ulpic{
-	width: 100px;
+	/*width: 100px;
 	height: 100px;
-	background: red;
+	background: red;*/
+	width: 243px;
+	height: 748px;
+	background-image: url("../img/system/twin2.png");
+	background-repeat: no-repeat;
 	position: fixed;
-	left: 200px;
+	left: 100px;
 	top: 300px;
 	animation: lpic 2s;
 	z-index: -1;
 }
 
 .test-urpic{
-	width: 100px;
+	/*width: 100px;
 	height: 100px;
-	background: blue;
+	background: blue;*/
+	width: 198px;
+	height: 748px;
+	background-image: url("../img/system/twin1.png");
+	background-repeat: no-repeat;
 	position: fixed;
-	right: 200px;
+	right: 100px;
 	top: 300px;
 	animation: rpic 2s;
 	z-index: -1;
@@ -481,35 +514,56 @@
 	animation: fadeInUp 1s linear;
 }
 
+.descp{
+	background-image: url("../img/system/diagl.png");
+	background-repeat: no-repeat;
+	background-size: 100% 100%;
+	margin-left: 10px;
+	color: white;
+	font-weight: 200;
+	font-size: 15px;
+	padding-top: 40px;
+	padding-bottom: 40px;
+	padding-left: 60px;
+	margin-left: 5px;
+	margin-top: 50px;
+	margin-right: 60px;
+	padding-right: 50px;
+}
+
 .test-usec{
 	/*width: 200px;*/
 	/*background-color: black;*/
-	background-image: url("../img/system/usec-bg.png");
+	background-image: url("../img/system/diagl.png");
+	/*max-width: 350px;*/
+	/*word-wrap: break-word;
+	word-break: break-all;*/
 	background-repeat: no-repeat;
 	background-size: auto 100%;
 	color: white;
 	font-weight: 200;
 	font-size: 20px;
-	padding-top: 5px;
-	padding-bottom: 5px;
-	padding-left: 30px;
-	margin-left: 20px;
+	padding-top: 20px;
+	padding-bottom: 20px;
+	padding-left: 50px;
+	margin-left: 10px;
 	margin-top: 50px;
+	padding-right: 100px;
 }
 
 .test-usecr{
 	/*width: 200px;*/
 	/*background-color: black;*/
-	background-image: url("../img/system/usec-bg.png");
+	background-image: url("../img/system/diagr.png");
 	background-position-x: right;
 	background-repeat: no-repeat;
 	background-size: auto 100%;
 	color: white;
 	font-weight: 200;
 	font-size: 20px;
-	padding-top: 5px;
-	padding-bottom: 5px;
-	padding-right: 55px;
+	padding-top: 20px;
+	padding-bottom: 20px;
+	padding-right: 90px;
 	text-align: right;
 	margin-right: 50px;
 	margin-top: 50px;
@@ -521,6 +575,11 @@
 }
 
 .test-usecr:hover{
+	animation: usection-hover 0.3s linear;
+	animation-iteration-count: 1;
+}
+
+.descp:hover{
 	animation: usection-hover 0.3s linear;
 	animation-iteration-count: 1;
 }
@@ -548,9 +607,9 @@
 .div-cloud {
 	position: absolute;
 	z-index: -20;
-	margin-top: 80px;
-	margin-left: 100px;
-	width: 100px;
+	margin-top: 200px;
+	margin-left: 200px;
+	width: 652px;
 	height: 100px;
 	animation: cloud 20s infinite linear;
 }
@@ -559,9 +618,9 @@
 	position: absolute;
 	z-index: -10;
 	margin-top: 150px;
-	width: 800px;
-	height: 400px;
-	margin-left: 700px;
+	width: 794px;
+	height: 340px;
+	margin-left: 400px;
 	animation: archi 20s infinite linear;
 }
 
@@ -575,15 +634,16 @@
 }
 
 .user-block {
-	background-image: url("../img/system/usec-bg.png");
+	background-image: url("../img/system/diagl.png");
 	background-repeat: no-repeat;
 	background-size: auto 100%;
 	color: white;
 	font-weight: 200;
 	font-size: 20px;
-	padding-top: 5px;
-	padding-bottom: 5px;
-	padding-left: 30px;
+	padding-top: 20px;
+	padding-bottom: 20px;
+	padding-left: 50px;
+	padding-right: 50px;
 	margin-top: 40px;
 }
 
@@ -600,18 +660,19 @@
 .contri-container {
 	overflow: auto;
 	zoom: 1;
-	width: 1000px;
-	height: 550px;
+	width: 1040px;
+	height: 600px;
 }
 
 .contri {
 	overflow: auto;
 	zoom: 1;
 	margin: 0 auto;
-	margin-top: 20px;
-	width: 90%;
-	height: 90%;
-	background: black;
+	margin-top: 40px;
+	width: 96%;
+	height: 92%;
+	text-align: center;
+	/*background: black;*/
 	z-index: 10;
 }
 
@@ -619,7 +680,8 @@
 	margin: 0 auto;
 	margin-top: 50px;
 	width: 60%;
-	height: 70%;
+	height: 76%;
+	background: white;
 }
 
 @keyframes uslogan{
@@ -709,7 +771,7 @@
 		transform: translateX(0);
 	}
 	50% {
-		transform: translateX(1000px);
+		transform: translateX(342px);
 	}
 	100% {
 		transform: translateX(0);
@@ -721,7 +783,7 @@
 		transform: translateX(0);
 	}
 	50% {
-		transform: translateX(-850px);
+		transform: translateX(-200px);
 	}
 	100% {
 		transform: translateX(0);
