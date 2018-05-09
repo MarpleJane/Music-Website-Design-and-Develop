@@ -1,7 +1,16 @@
 #coding:utf-8
-from sqlalchemy import Column, ForeignKey, Integer, String, DateTime
+import datetime
+
+from sqlalchemy import Column, ForeignKey, Integer, String, DateTime, Float
+from sqlalchemy.orm import relationship
 
 from models.base import ORMBase, engine
+
+
+class SongType(ORMBase):
+    """歌曲类型, 0代表其他"""
+    _id = Column(Integer, primary_key=True, autoincrement=True)
+    type_name = Column(String(32))
 
 
 class Songs(ORMBase):
@@ -9,10 +18,26 @@ class Songs(ORMBase):
     _id = Column(Integer, primary_key=True, autoincrement=True)
     uploader = Column(Integer, ForeignKey("user_login._id", name="fk_uploader"))
     name = Column(String(128), nullable=False)
+    album = Column(String(128), nullable=True)  # 所属专辑
     author = Column(String(128), nullable=False, default="Unkown")
     file_path = Column(String(256), nullable=True)
     description = Column(String(256), nullable=True)
-    flag = Column(Integer, nullable=False, default=0)
+    type_id = Column(Integer, nullable=False, default=0)  # 歌曲类型
+    flag = Column(Integer, ForeignKey("song_type._id", name="fk_type"), nullable=False, default=0)
+    play_times = Column(Integer, nullable=False, default=0)  # 播放次数/点击量
+    rate = Column(Float, nullable=False, default=0)  # 打分
+    created_time = Column(DateTime, default=datetime.datetime.now)
+    
+    comments = relationship("Comments")
+
+
+class Comments(ORMBase):
+    """歌曲评论"""
+    _id = Column(Integer, primary_key=True, autoincrement=True)
+    content = Column(String(256))
+    author_id = Column(Integer, ForeignKey("user_info._id", name="fk_comment_author"), nullable=False)
+    song_id = Column(Integer, ForeignKey("songs._id", name="fk_comment_song"), nullable=False)
+    created_time = Column(DateTime, default=datetime.datetime.now)
 
 
 ORMBase.metadata.create_all(engine)

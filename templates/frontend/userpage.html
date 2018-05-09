@@ -1,0 +1,67 @@
+{% extends "./base.html" %}
+
+{% block main %}
+<div id="user" class="space-container space-clearfix">
+	<div class="block-padding">
+<!-- 		<div v-if="myself">
+		</div>
+		<div v-else>
+			<other-user></other-user>
+		</div> -->
+		<div class="test-ulpic"></div>
+		<div class="test-urpic"></div>
+		<div class="usection-outter">
+			<div class="demo-avatar">
+				<avatar class="avatar" icon="person" size="large"></avatar>
+				<p class="username">{{! username }}</p>
+			</div>
+			<div class="usection-container fadeInUp">
+			    <div class="descp">{{! desc }}</div>	
+				<a target="_blank" :href="'/musicweb/space/contributes/' + space_id"><div class="test-usec">投稿</div></a>
+				<a target="_blank" :href="'/musicweb/space/columns/' + space_id"><div class="test-usec">专栏</div></a>
+				<!-- <a target="_blank" :href="'/musicweb/space/collections/' + space_id"><div class="test-usec">收藏</div></a> -->
+				<a target="_blank" v-if="myself" :href="'/musicweb/space/settings/' + space_id"><div class="test-usec">设置</div></a>
+				<a href="javascript:window.close()"><div class="test-usecr">退出</div></a>
+			</div>
+		</div>
+		<div class="usection-modify"></div>
+	</div>	
+</div>
+
+
+{% end %}
+
+{% block script %}
+<script>
+	var user = new Vue({
+		el: "#user",
+		data: function() {
+			return {
+				myself: false,
+				space_id: "",
+				username: "",
+				desc: "",
+				avatar: ""
+			}
+		},
+		created: function() {
+			this.fetchData();
+		},
+		methods: {
+			fetchData: function() {
+				var that = this;
+				this.$http.post("/musicweb/space/" + {{ space_id }}
+				).then(function(response) {
+					that.space_id = response.body.space_id;
+					that.username = response.body.username;
+					that.desc = response.body.desc;
+					that.avatar = response.body.avatar;
+					that.myself = response.body.yourself;
+				}, function(response) {
+					alert("error");
+				})
+			}
+		}
+	});
+</script>
+{% end %}

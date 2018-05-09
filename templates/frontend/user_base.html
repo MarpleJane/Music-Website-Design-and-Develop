@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Wuliwuli</title>
+	<link rel="stylesheet" type="text/css" href="https://cdn.bootcss.com/iview/2.13.1/styles/iview.css">
+	<link rel="stylesheet" href="{{ static_url('css/mycss.css') }}">
+	{% block header %}
+	{% end %}
+</head>
+<body style="margin: 0">
+	<div class="background"></div>
+	<div class="div-cloud">
+		<img src="{{ static_url('img/system/clouds.png') }}" alt="" class="img1">
+	</div>
+	<div class="div-archi">
+		<img src="{{ static_url('img/system/archi.png') }}" class="img1">
+	</div>
+	{% block main %}
+	{% end %}
+	<script src="{{ static_url('js/vue/vue.js') }}"></script>
+	<script src="{{ static_url('js/iview/iview2.9.2.min.js') }}"></script>
+	<script src="{{ static_url('js/vue/vue-resource.js') }}"></script>
+	<script src="{{ static_url('js/vue/vue-router@3.0.1.js') }}"></script>
+	{% block script %}
+	{% end %}
+</body>
+</html>

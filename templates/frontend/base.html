@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Wuliwuli</title>
+	<!-- <link rel="stylesheet" href="http://unpkg.com/iview@2.9.2/dist/styles/iview.css"> -->
+	<link rel="stylesheet" type="text/css" href="https://cdn.bootcss.com/iview/2.13.1/styles/iview.css">
+	<link rel="stylesheet" href="{{ static_url('css/mycss.css') }}">
+	<style>
+		.ivu-menu-dark {
+			background: #000;
+		}
+		
+		.ivu-layout-header {
+			background: #000;
+		}
+
+		.ivu-menu-horizontal .ivu-menu-submenu {
+			float: right;
+		}
+
+		.ivu-menu-submenu-title span>i, .ivu-menu-submenu-title>i {
+		     margin-right: 0px; 
+		}
+
+		.ivu-select-dropdown {
+			background-color: #000;
+		}
+
+		.ivu-menu-horizontal .ivu-menu-submenu .ivu-select-dropdown .ivu-menu-item {
+			color: #fff;
+		}
+
+		.ivu-menu-horizontal .ivu-menu-submenu .ivu-select-dropdown .ivu-menu-item:hover {
+		    background: darkred;
+		}
+	</style>
+	{% block header %}
+	{% end %}
+</head>
+<body>
+	<div id="nav">
+	  <div v-if="user_id == '0'">
+	    <div class="layout">
+	      <layout>
+	        <i-header>
+	          <i-menu mode="horizontal" theme="dark">
+	            <div class="layout-logo"></div>
+	            <div class="layout-nav">
+	              <menu-item name="signin" @click.native="sign_in=true" style="float:right;">
+	                登录
+	              </menu-item>
+	              <menu-item name="signup" @click.native="sign_up=true" style="float:right;">
+	                注册
+	              </menu-item>
+	            </div>
+	          </i-menu>
+	        </i-header>
+	      </layout>
+	    </div>
+      </div>
+    
+      <div v-else>
+	    <div class="layout">
+	      <layout>
+	        <i-header>
+	          <i-menu mode="horizontal" theme="dark">
+	            <div class="layout-logo"></div>
+	            <div class="layout-nav">
+	              <submenu name="avatar">
+	              	<template slot="title">
+	              		<div style="display:inline;">
+	              			<avatar icon="person" />
+	              		</div>
+	              		{{! username }}
+	              	</template>
+	              	<a :href="'/musicweb/space/' + user_id">
+	              		<menu-item name="setting">领地</menu-item>
+	              	</a>
+	              	<menu-item name="logout" @click.native="logOut">解除契约</menu-item>
+	              </submenu>
+	            </div>
+	          </i-menu>
+	        </i-header>
+	      </layout>
+	    </div>
+	  </div>
+
+      <modal v-model="sign_in">
+      	<p slot="header" style="color:#f60; text-align:center;">
+      		I am thou, thou art I
+      	</p>
+      	<div>
+      		<i-form ref="formItem" v-model="formItem" :label-width="80">
+      			<form-item prop="nickname" label="汝之名为">
+      				<i-input type="text" v-model="formItem.nickname">
+      					<icon type="ios-person-outline" slot="prepend"></icon>
+      				</i-input>
+      			</form-item>
+      			<form-item prop="password" label="汝之暗号">
+      				<i-input type="password" v-model="formItem.password">
+      					<icon type="ios-locked-outline" slot="prepend"></icon>
+      				</i-input>
+      			</form-item>
+      		</i-form>
+      	</div>
+      	<div slot="footer">
+      		<i-button type="error" :loading="modal_loading" @click="signIn">续约</i-button>
+      	</div>
+      </modal>
+
+      <modal v-model="sign_up" title="common modal">
+      	<p slot="header" style="color:#f60; text-align:center;">
+      		I am thou, thou art I
+      	</p>
+      	<div>
+      		<i-form ref="formItem" v-model="formItem" :label-width="80">
+      			<form-item prop="nickname" label="汝之名为">
+      				<i-input type="text" v-model="formItem.nickname">
+      					<icon type="ios-person-outline" slot="prepend"></icon>
+      				</i-input>
+      			</form-item>
+      			<form-item prop="password" label="汝之暗号">
+      				<i-input type="password" v-model="formItem.password">
+      					<icon type="ios-locked-outline" slot="prepend"></icon>
+      				</i-input>
+      			</form-item>
+      		</i-form>
+      	</div>
+      	<div slot="footer">
+      		<i-button type="error" :loading="modal_loading" @click="signUp">签订契约</i-button>
+      	</div>
+      </modal>
+	</div>
+
+
+	<div class="banner"></div>
+	<div id="search">
+		<input type="text" class="header-input search-class" v-model="value"></input>
+	</div>
+	{% block main %}
+	{% end %}
+
+	<script src="{{ static_url('js/vue/vue.js') }}"></script>
+	<script src="{{ static_url('js/vue/vue-resource.js') }}"></script>
+	<script src="{{ static_url('js/vue/vue-router@3.0.1.js') }}"></script>
+	<script src="{{ static_url('js/iview/iview2.9.2.min.js') }}"></script>
+	<script>
+		var nav = new Vue({
+			el: "#nav",
+			data: {
+				// user_id: "0000",
+				user_id: 0,
+				username: "",
+				sign_in: false,
+				sign_up: false,
+				modal_loading: false,
+				formItem: {
+					nickname: "",
+					password: "",
+				}
+			},
+			created: function() {
+				this.fetchData();
+			},
+			methods: {
+				fetchData: function() {
+					var that = this;
+					this.$http.post("/musicweb/index",
+					).
+					  then(function(response) {
+					  	that.user_id = response.body.user_id;
+					  	that.username = response.body.username;
+					  }, function(response) {
+					  	alert("error");
+					  });
+				},
+				ok: function() {
+					this.$Message.info("Clicked ok");
+				},
+				cancel: function() {
+					this.$Message.info("契约终止");
+				},
+				signIn: function() {
+					this.modal_loading = true;
+					var that = this;
+					this.$http.post("/musicweb/signin",
+						{user: that.formItem.nickname, password: that.formItem.password},
+					    {emulateJSON: true}
+					).then(function(response) {
+						var ret = response.body.ret;
+						var msg = response.body.msg;
+						if (ret) {
+							that.$Message.error(msg);
+							that.modal_loading = false;
+						} else {
+							setTimeout(function() {
+								that.modal_loading = false;
+								that.sign_in = false;
+								that.$Message.success(msg);
+								// that.$Message.success("吾即汝，汝即吾，即刻起，契约签订");
+								location.reload();
+							}, 2000);
+						}
+					})
+				},
+				signUp: function() {
+					this.modal_loading = true;
+					var that = this;
+					this.$http.post("/musicweb/signup",
+					    {user: that.formItem.nickname, password: that.formItem.password},
+					    {emulateJSON: true}
+					).then(function(response) {
+						var ret = response.body.ret;
+						var msg = response.body.msg;
+						if (ret) {
+							that.$Message.error(msg);
+							that.modal_loading = false;
+						} else {
+							setTimeout(function() {
+								that.modal_loading = false;
+								that.sign_up = false;
+								that.$Message.success(msg);
+								// that.$Message.success("吾即汝，汝即吾，即刻起，契约签订");
+								location.reload();
+							}, 2000);
+						}
+					}, function(response) {
+						alert("error");
+					})
+				},
+				logOut: function() {
+					this.$http.get("/musicweb/logout",
+					).then(function(response) {
+						location.reload();
+					})
+				}
+			}
+		});
+		// var search = new Vue({
+		// 	el: "#search",
+		// 	data: {
+		// 		value: ""
+		// 	}
+		// })
+	</script>
+	{% block script %}
+	{% end %}
+</body>
+</html>
