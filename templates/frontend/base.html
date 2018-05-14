@@ -173,9 +173,15 @@
 					this.$http.post("/musicweb/index",
 					).
 					  then(function(response) {
-					  	that.user_id = response.body.user_id;
-					  	that.username = response.body.username;
-					  	that.avatar = response.body.avatar;
+					  	var status = response.body.status;
+					  	if (status == 0) {
+					  		that.user_id = response.body.user_id;
+					  		that.username = response.body.username;
+					  		that.avatar = response.body.avatar;
+					  	} else {
+					  		that.$Message.error("用户被禁用");
+					  	}
+					  	
 					  }, function(response) {
 					  	alert("error");
 					  });

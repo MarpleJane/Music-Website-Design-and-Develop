@@ -37,6 +37,7 @@ class BaseController(RequestHandler):
             user_info["user_id"] = ur._id
             user_info["username"] = ur.account
             user_info["avatar"] = uin.avatar
+            user_info["status"] = ur.status
         return user_info
 
     def user_info(self, user_id):
@@ -47,7 +48,8 @@ class BaseController(RequestHandler):
             user_id = ur._id,
             username = ur.account,
             desc = ur.info[0].description,
-            avatar = ur.info[0].avatar
+            avatar = ur.info[0].avatar,
+            status = ur.info[0].status
         )
 
     def trail_pass(self):
