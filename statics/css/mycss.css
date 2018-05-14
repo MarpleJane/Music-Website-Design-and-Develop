@@ -98,12 +98,12 @@ body{
 .carousel-item{
 	width: 100%;
 	height: 220px;
-	line-height: 220px;
-	text-align: center;
-	color: #fff;
-	font-size: 20px;
-	background: #506b9e;
-	/*border-radius: 4px;*/
+	/*line-height: 220px;*/
+	/*text-align: center;*/
+	/*color: #fff;*/
+	/*font-size: 20px;*/
+	/*background: #506b9e;*/
+	border-radius: 4px;
 }
 
 .chief-recommend-module .recommend-module{
@@ -229,6 +229,14 @@ body{
 	width: 100%;
 	height: 100%;
 	display: inline-block;
+}
+
+.lazy-img img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    margin: 0 auto;
+    outline: 0;
 }
 
 .t{
@@ -682,6 +690,102 @@ body{
 	width: 60%;
 	height: 76%;
 	background: white;
+}
+
+.bb-comment {
+    font-family: Microsoft YaHei,Arial,Helvetica,sans-serif;
+    zoom: 1;
+    min-height: 100px;
+    background: #111;
+    color: #fff;
+}
+
+.bb-comment .comment-send {
+    margin: 10px 0;
+}
+
+.bb-comment .user-face {
+    float: left;
+    margin: 7px 0 0 5px;
+    position: relative;
+}
+
+.comment-avatar {
+	width: 48px;
+	height: 48px;
+	line-height: 48px;
+	border-radius: 24px;
+}
+
+.bb-comment .comment-send .textarea-container {
+    position: relative;
+    margin-left: 85px;
+    margin-right: 80px;
+}
+
+.bb-comment .comment-send .textarea-container textarea {
+    font-size: 12px;
+    display: inline-block;
+    box-sizing: border-box;
+    background-color: #f4f5f7;
+    border: 1px solid #e5e9ef;
+    overflow: auto;
+    border-radius: 4px;
+    color: #555;
+    width: 100%!important;
+    height: 65px;
+    transition: 0s;
+    padding: 5px 10px;
+    line-height: normal;
+}
+
+.bb-comment .comment-send .comment-submit {
+    width: 70px;
+    height: 64px;
+    position: absolute;
+    right: -80px;
+    top: 0;
+    padding: 4px 15px;
+    font-size: 14px;
+    border-radius: 4px;
+    text-align: center;
+    min-width: 60px;
+    vertical-align: top;
+    cursor: pointer;
+    background-color: #fff;
+    border: 1px solid darkred;
+    transition: .1s;
+    user-select: none;
+    outline: none;
+}
+
+.one-comment {
+	position: relative;
+	margin-left: 85px;
+	padding: 22px 0 14px;
+	border-top: 1px solid #fff;
+}
+
+.user-name {
+	font-size: 12px;
+    font-weight: 700;
+    line-height: 18px;
+    padding-bottom: 4px;
+    display: block;
+    word-wrap: break-word;
+    color: #e2e8e4;
+}
+
+.comment-content {
+    line-height: 20px;
+    padding: 2px 0;
+    font-size: 14px;
+    text-shadow: none;
+    overflow: hidden;
+    word-wrap: break-word;
+    word-break: break-word;
+    color: #eee;
+    margin: 0;
 }
 
 @keyframes uslogan{

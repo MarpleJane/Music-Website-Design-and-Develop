@@ -16,6 +16,11 @@
 	.ivu-page-next:hover, .ivu-page-prev:hover {
 	    border-color: #000;
 	}
+	.ivu-carousel-list {
+		height: 220px;
+		border-radius: 4px;
+		margin-right: 5px;
+	}
 </style>
 {% end %}
 
@@ -60,18 +65,20 @@
 	<div>
 	    <div class="chief-recommend-module">
 			<div class="carousel-box">
-				<carousel autoplay loop>
+				<carousel autoplay v-model="start" loop>
 					<carousel-item>
-						<div class="carousel-item">1</div>
+						<a :href="carousel_target1">
+							<div class="lazy-img">
+								<img :src="img1" alt="">
+							</div>
+						</a>
 					</carousel-item>
 					<carousel-item>
-						<div class="carousel-item">2</div>
-					</carousel-item>
-					<carousel-item>
-						<div class="carousel-item">3</div>
-					</carousel-item>
-					<carousel-item>
-						<div class="carousel-item">4</div>
+						<a :href="carousel_target2">
+							<div class="lazy-img">
+								<img :src="img2" alt="">
+							</div>
+						</a>
 					</carousel-item>
 				</carousel>
 			</div>
@@ -82,10 +89,6 @@
 						排行
 					</p>
 					<ul>
-						<!-- <li v-for="item in rankList">
-							<a :href="item.url" target="_blank">{{! item.name }}</a>
-							<span class="bcon bcon-net"></span>
-						</li> -->
 						<rank-list v-for="item in rankList"
 						           v-bind:rank="item"
 						           v-bind:key="item.id">
@@ -103,7 +106,7 @@
 			</div>
 			<div class="storey-box">
 				<song-list 
-				  v-for="item in songs"
+				  v-for="item in newlyUploads"
 				  v-bind:song="item"
 				  v-bind:key="item.id">
 				 </song-list>
@@ -117,7 +120,7 @@
 		</div>
 		<div class="storey-box">
 			<song-list
-			  v-for="item in songs"
+			  v-for="item in Diys"
 			  v-bind:song="item"
 			  v-bind:key="item.id">
 			</song-list>
@@ -130,7 +133,7 @@
 		</div>
 		<div class="storey-box">
 			<song-list
-			  v-for="item in songs"
+			  v-for="item in Nodiys"
 			  v-bind:song="item"
 			  v-bind:key="item.id">
 			</song-list>
@@ -161,7 +164,7 @@
 	<div>
 		<div class="block-padding clearfix">
 			<song-list
-		      v-for="item in songs"
+		      v-for="item in allDiys"
 		      v-bind:song="item"
 		      v-bind:key="item.id">
 		    </song-list>
@@ -181,8 +184,8 @@
 <template id="column">
 	<div class="block-padding">
 		<column-list
-		  v-for="item in articles"
-		  v-bind:article="item"
+		  v-for="item in columns"
+		  v-bind:column="item"
 		  v-bind:key="item.id">
 		</column-list>
 		<div align="center" class="pagination">
@@ -193,10 +196,10 @@
 
 <template id="song-list">
 	<div class="spread-module">
-		<a :href="song.link" target="_blank">
+		<a :href="song.url" target="_blank">
 			<div class="pic">
-				<div class="lazy-pic">
-					<img :src="song.pic" :alt="song.name">
+				<div class="lazy-img">
+					<img :src="song.cover_path" :alt="song.name">
 				</div>
 			</div>
 			<p class="t" :title="song.name">{{! song.name }}</p>
@@ -227,13 +230,13 @@
 		<div class="item-holder">
 			<div class="article-content">
 				<div>
-					<a :href="article.link" target="_blank" class="article-title-holder">
-						<span class="article-title" :title="article.title">{{! article.title }}</span>
+					<a :href="column.url" target="_blank" class="article-title-holder">
+						<span class="article-title" :title="column.name">{{! column.name }}</span>
 					</a>
 				</div>
 				<div class="article-info-bar">
-					<a :href="article.author.link" target="_blank" class="up-content">
-						<span class="nick-name">{{! article.author.name }}</span>
+					<a :href="'/musicweb/space/' + column.author_id" target="_blank" class="up-content">
+						<span class="nick-name">{{! column.author }}</span>
 					</a>
 				</div>
 			</div>
@@ -285,7 +288,6 @@
 				    	var linkNum = params.row.link.length;
 				    	var hArray = new Array();
 				    	var mapName = {"1": "网易", "2": "QQ", "3": "酷狗"};
-				    	// if (linkNum == 1) {
 				    		hArray.push(
 				    			h("Button", {
 				    			   props: {
@@ -296,32 +298,10 @@
 				    			   },
 				    			   on: {
 				    			   	   click: function() {
-				    			   	   	 // this.show(params.index);
 				    			   	   	 window.open(params.row.link);
 				    			   	   }
 				    			   }
 				    			}, mapName[params.row.dsp_id.toString()]))
-				    	// } else {
-				    	// 	var mapName = ["网易", "qq", "酷狗"];
-				    	// 	for (var i = 0; i < linkNum; i ++) {
-				    	// 		hArray.push(
-				    	// 			h("Button", {
-				    	// 				props: {
-				    	// 					size: "small",
-				    	// 					// disabled: !Boolean(params.row.link[i])
-				    	// 				},
-				    	// 				style: {
-				    	// 					marginRight: '5px'
-				    	// 				},
-				    	// 				on: {
-				    	// 					click: function() {
-				    	// 						// this.show(params.index);
-				    	// 						window.open(params.row.link_info[i].link);
-				    	// 					}
-				    	// 				}
-				    	// 			}, mapName[params.row.link_info[i].dsp_id.toString()]))
-				    	// 	}
-				    	// }
 				    	return h("div", hArray);
 				    } },
 				]
@@ -373,17 +353,86 @@
 		data: function() {
 			return {
 				fixedColumn: [
-				  { title: "点击量", key: "click", sortable: true},
-				  { title: "歌名", key: "name" },
-				  { title: "上传者", key: "uploader" },
-				  { title: "分类", key: "category", sortable: true},
+				  { title: "创作类型",
+				    key: "origin_type", 
+				    filters: [
+				      {
+				      	label: "原创",
+				      	value: 1
+				      },
+				      {
+				      	label: "非原创",
+				      	value: 2
+				      }
+				    ],
+				    filterMultiple: true,
+				    filterMethod (value, row) {
+				    	if (value == 1) {
+				    		return row.origin_type == "原创";
+				    	} else if (value == 2) {
+				    		return row.origin_type == "非原创";
+				    	}
+				    }
+				  },
+				  { title: "歌名", key: "name",
+				    render: function(h, params) {
+				    	var href = [h("a", {
+				    		on: {
+				    			click: function() {
+				    				window.open(params.row.url);
+				    			}
+				    		}
+				    	}, params.row.name)];
+				    	return h("div", href);
+				    }
+				  },
+				  { title: "上传者", key: "uploader_name" },
+				  { title: "分类", 
+				    key: "song_type", 
+				    filters: [
+				      {
+				      	label: "中文",
+				      	value: 1
+				      },
+				      {
+				      	label: "轻音乐",
+				      	value: 2
+				      },
+				      {
+				      	label: "爵士",
+				      	value: 3
+				      },
+				      {
+				      	label: "日文",
+				      	value: 4
+				      },
+				      {
+				      	label: "英文",
+				      	value: 5
+				      },
+				    ],
+				    filterMultiple: true,
+				    filterMethod (value, row) {
+				    	if (value == 1) {
+				    		return row.song_type == "中文";
+				    	} else if (value == 2) {
+				    		return row.song_type == "轻音乐";
+				    	} else if (value == 3) {
+				    		return row.song_type == "爵士";
+				    	} else if (value == 4) {
+				    		return row.song_type == "日文";
+				    	} else if (value == 5) {
+				    		return row.song_type == "英文";
+				    	}
+				    }
+				  },
 				]
 			}
 		}
 	});
 
 	var ColumnList = Vue.component("column-list", {
-		props: ["article"],
+		props: ["column"],
 		template: "#column-list"
 	});
 
@@ -392,11 +441,14 @@
 		data: function() {
 			return{
 				rankList: [],
-			    songs:[{
-			    	link: "/musicweb/song",
-			    	pic: "{{ static_url('img/test.jpg') }}",
-			    	name: "test"
-			    },]
+			    newlyUploads: [],
+			    Diys: [],
+			    Nodiys: [],
+			    img1: "",
+			    img2: "",
+			    carousel_target1: "",
+			    carousel_target2: "",
+			    start: 0,
 			}
 		},
 		created: function() {
@@ -410,6 +462,24 @@
 					that.rankList = response.body.union_list.slice(0,5);
 				}, function(response) {
 					alert("error");
+				});
+
+				this.$http.get("/api/songindex/?query=7"
+				).then(function(response) {
+					var results = response.body.results;
+					console.log(results);
+					that.newlyUploads = results[0];
+					that.Diys = results[1];
+					that.Nodiys = results[2];
+				});
+
+				this.$http.get("/api/carousel"
+				).then(function(response) {
+					var carouselList = response.body.carousel_list;
+					that.img1 = carouselList[0].url;
+					that.carousel_target1 = carouselList[0].target;
+					that.img2 = carouselList[1].url;
+					that.carousel_target2 = carouselList[1].target;
 				})
 			}
 		}
@@ -420,15 +490,6 @@
 		data: function() {
 			return {
 				current: 0,
-				spider: {
-					name: "网易",
-					spiderList: [
-					  { rank: 1, name: "小苹果", singer: "筷子兄弟", link: ["www.baidu.com"] },
-					  { rank: 2, name: "苹果", singer: "子兄弟", link: ["www.baidu.com", "www.google.com", ""] },
-					  { rank: 3, name: "果", singer: "兄弟", link: ["www.baidu.com", "", "www.google.com"] },
-					  { rank: 4, name: "ppap", singer: "pikotaro", link: ["www.baidu.com", "wwww.google.com", "www.yahoo.com"] },
-					]
-				},
 				rankList: [],
 				spiderList: []
 			};
@@ -466,21 +527,36 @@
 		data: function() {
 			return {
 				current: 1,
-				total: 6,
-				pageSize: 6,
-				songs: [
-				  {link: "www.abc.com", pic: "{{ static_url('img/test.jpg') }}", name: "test" },
-				  {link: "www.abc.com", pic: "{{ static_url('img/test.jpg') }}", name: "test" },
-				  {link: "www.abc.com", pic: "{{ static_url('img/test.jpg') }}", name: "test" },
-				  {link: "www.abc.com", pic: "{{ static_url('img/test.jpg') }}", name: "test" },
-				  {link: "www.abc.com", pic: "{{ static_url('img/test.jpg') }}", name: "test" },
-				  {link: "www.abc.com", pic: "{{ static_url('img/test.jpg') }}", name: "test" },
-				]
+				total: 0,
+				pageSize: 3,
+				allDiys: []
 			}
+		},
+		created: function() {
+			this.fetchData();
 		},
 		methods: {
 			changePage: function(page) {
 				console.log(page);
+				this.current = page;
+				var that = this;
+				this.$http.post("/api/songindex/?",
+					{current: that.current, pageSize: that.pageSize, query: 2},
+					{emulateJSON: true}
+				).then(function(response) {
+					that.allDiys = response.body.origin_list;
+					that.total = response.body.total;
+				})
+			},
+			fetchData: function() {
+				var that = this;
+				this.$http.post("/api/songindex/?",
+					{current: that.current, pageSize: that.pageSize, query: 2},
+					{emulateJSON: true}
+				).then(function(response) {
+					that.allDiys = response.body.origin_list;
+					that.total = response.body.total;
+				})
 			}
 		}
 	});
@@ -489,12 +565,21 @@
 		template: "#music",
 		data: function() {
 			return {
-				songList: [
-				  { click: 123, name: "jackson", uploader: "foo", category: 1 },
-				  { click: 1234, name: "dangerous", uploader: "foo", category: 1 },
-				  { click: 1235, name: "private", uploader: "foo", category: 1 },
-				  { click: 12, name: "jackson", uploader: "foo", category: 1 },
-				]
+				songList: []
+			}
+		},
+		created: function() {
+			this.fetchData();
+		},
+		methods: {
+			fetchData: function() {
+				var that = this;
+				this.$http.post("/api/songindex/?",
+					{query: 8},
+					{emulateJSON: true}
+				).then(function(response) {
+					that.songList = response.body.song_list;
+				})
 			}
 		}
 	});
@@ -504,33 +589,25 @@
 		data: function() {
 			return {
 				current: 1,
-				total: 6,
+				total: 1,
 				pageSize: 3,
-				articles: [
-				  {
-				  	title: "召唤师，你后悔吗？",
-				  	link: "www.baidu.com",
-				  	cover: "img/test.jpg",
-				  	author: {name: "树上猕猴桃 ", link: "www.baidu.com"},
-				  },
-				  {
-				  	title: "召唤师，你后悔吗？",
-				  	link: "www.baidu.com",
-				  	cover: "img/test.jpg",
-				  	author: {name: "树上猕猴桃 ", link: "www.baidu.com"},
-				  },
-				  {
-				  	title: "召唤师，你后悔吗？",
-				  	link: "www.baidu.com",
-				  	cover: "img/test.jpg",
-				  	author: {name: "树上猕猴桃 ", link: "www.baidu.com"},
-				  }
-				]
+				columns: []
 			}
+		},
+		created: function() {
+			this.fetchData();
 		},
 		methods: {
 			changePage: function(page) {
 				console.log(page);
+			},
+			fetchData: function() {
+				var that = this;
+				this.$http.get("/api/allcolumns"
+				).then(function(response) {
+					that.columns = response.body.columns;
+					console.log(response.body);
+				})
 			}
 		}
 	});
@@ -549,11 +626,11 @@
 		router
 	}).$mount("#subnav");
 
-	var search = new Vue({
-			el: "#search",
-			data: {
-				value: ""
-			}
-		})
+	// var search = new Vue({
+	// 		el: "#search",
+	// 		data: {
+	// 			value: ""
+	// 		}
+	// 	})
 </script>
 {% end %}

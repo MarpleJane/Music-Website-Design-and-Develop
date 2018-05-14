@@ -26,12 +26,18 @@ urls = [
     (BACKEND+r"login", BackLoginController),
     (BACKEND+r"logout", BackLogoutController),
     (BACKEND+r"welcome", WelcomeController),
+    (BACKEND+r"songinfo/([0-9]+)", BackSongInfoController),
+
+    (r"/bpi/songtrail", BackSongTrailController),
+    (r"/bpi/songinfo/([0-9]+)", BackSongEditController),
+    (r"/bpi/userstatus", BackUserController),
 
     (BASE+r"index", IndexController),
-    (BASE+r"song", SongController),
+    (BASE+r"song/([0-9]+)", SongController),
     (BASE+r"space/([0-9]+)", SpaceController),
     (BASE+r"space/contributes/([0-9]+)", ContributeController),
     (BASE+r"space/columns/([0-9]+)", ColumnController),
+    (BASE+r"space/column/([0-9]+)", ColumnContentController),
     (BASE+r"space/columns/([0-9]+)/edit", ColumnEditController),
     (BASE+r"space/settings/([0-9]+)", SettingController),
     (BASE+r"signin", FrontSigninController),
@@ -40,6 +46,14 @@ urls = [
 
     (r"/api/userinfochange/([0-9]+)", UserInfoChangeController),
     (r"/api/spiderindex", SpiderIndexController),
+    (r"/api/importsong", ImportController),
+    (r"/api/allcolumns", ColumnIndexController),
+    (r"/api/columnspace/([0-9]+)", ColumnSpaceController),
+    (r"/api/songindex/?", SongIndexController),
+    (r"/api/songspace", SongSpaceController),
+    (r"/api/songtrail", SongTrailController),
+    (r"/api/comments?", CommentController),
+    (r"/api/carousel", CarouselController),
 ]
 
 application_settings = dict(

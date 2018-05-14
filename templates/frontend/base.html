@@ -4,7 +4,8 @@
 	<meta charset="UTF-8">
 	<title>Wuliwuli</title>
 	<!-- <link rel="stylesheet" href="http://unpkg.com/iview@2.9.2/dist/styles/iview.css"> -->
-	<link rel="stylesheet" type="text/css" href="https://cdn.bootcss.com/iview/2.13.1/styles/iview.css">
+	<!-- <link rel="stylesheet" type="text/css" href="https://cdn.bootcss.com/iview/2.13.1/styles/iview.css"> -->
+	<link rel="stylesheet" href="{{ static_url('css/iview/styles/iview.css') }}">
 	<link rel="stylesheet" href="{{ static_url('css/mycss.css') }}">
 	<style>
 		.ivu-menu-dark {
@@ -70,11 +71,13 @@
 	              <submenu name="avatar">
 	              	<template slot="title">
 	              		<div style="display:inline;">
-	              			<avatar icon="person" />
+	              			<avatar v-if="avatar" :src="avatar"></avatar>
+	              			<avatar v-else icon="person"></avatar>
+	              			<!-- <avatar :src="avatar"></avatar> -->
 	              		</div>
 	              		{{! username }}
 	              	</template>
-	              	<a :href="'/musicweb/space/' + user_id">
+	              	<a :href="'/musicweb/space/' + user_id" target="_blank">
 	              		<menu-item name="setting">领地</menu-item>
 	              	</a>
 	              	<menu-item name="logout" @click.native="logOut">解除契约</menu-item>
@@ -135,9 +138,9 @@
 
 
 	<div class="banner"></div>
-	<div id="search">
+	<!-- <div id="search">
 		<input type="text" class="header-input search-class" v-model="value"></input>
-	</div>
+	</div> -->
 	{% block main %}
 	{% end %}
 
@@ -152,6 +155,7 @@
 				// user_id: "0000",
 				user_id: 0,
 				username: "",
+				avatar: "",
 				sign_in: false,
 				sign_up: false,
 				modal_loading: false,
@@ -171,6 +175,7 @@
 					  then(function(response) {
 					  	that.user_id = response.body.user_id;
 					  	that.username = response.body.username;
+					  	that.avatar = response.body.avatar;
 					  }, function(response) {
 					  	alert("error");
 					  });

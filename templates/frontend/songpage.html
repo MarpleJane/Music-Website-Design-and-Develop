@@ -9,13 +9,15 @@
 	a:active, a:hover {
 		color: #f02d2d;
 	}
+ 	.ivu-btn:hover {
+	    color: darkred;
+	}
 </style>
 {% end %}
 
 {% block main %}
 <div id="song" class="layout-sub-container">
 	<div class="song-header">
-		<!-- <h1>Sugar Song To Bitter Step</h1> -->
 		<h1>{{! songInfo.name }}</h1>
 	</div>
 
@@ -30,10 +32,10 @@
     	<div class="song-intro">
     		<div><span>音频名：</span><span>{{! songInfo.name }}</span></div>
     		<div><span>作者：</span><span>{{! songInfo.artist }}</span></div>
-    		<div><span>投稿者：</span><span><a :href="'/musicweb/space/' + songInfo.uploader.id">{{! songInfo.uploader.name }}</a></span></div>
+    		<div><span>投稿者：</span><span><a :href="'/musicweb/space/' + songInfo.uploader_id">{{! songInfo.uploader }}</a></span></div>
     		<div><span>简介：</span><span>{{! songInfo.desc }}</span></div>
-    		<div>
-    			<a href="">
+    		<div v-if="logined">
+    			<a href="{{ file_path }}" download="song.mp3">
     				<i class="pcon pcon_t pcon-download" style="margin-right:0px"></i>
     				<p class="name">下载</p>
     			</a>
@@ -41,24 +43,107 @@
     	</div>
     </div>
 
+    <div class="bb-comment">
+    	<!-- <div class="comment-send"> -->
+    	<div class="comment-send" v-if="logined">
+    		<div class="user-face">
+    			<a :href="'/musicweb/space/' + user_id">
+    				<avatar v-if="avatar" class="comment-avatar" :src="avatar"></avatar>
+					<avatar v-else class="comment-avatar" icon="person"></avatar>
+    			</a>
+    		</div>
+    		<div class="textarea-container">
+    			<textarea name="msg" id="" cols="80" rows="5" maxlength="1000" v-model="msg"></textarea>
+    			<i-button @click="sendComment" class="comment-submit">发送</i-button>
+    		</div>
+    	</div>
+    	
+    	<div style="padding-top:20px;">
+			<comment-list v-for="item in commentList"
+			              v-bind:comment="item"
+			              v-bind:key="item.id">
+			</comment-list>
+		</div>
+    </div>
+
 	<i-footer class="footer-center">～ようこそウリウリへο(=•ω＜=)ρ⌒☆～</i-footer>
 	<back-top></back-top>
 </div>
+
+<template id="comment-list">
+	<div>
+		<div class="user-face">
+			<a :href="'/musicweb/space/' + comment.user_id">
+				<avatar v-if="comment.avatar" class="comment-avatar" :src="comment.avatar"></avatar>
+				<avatar v-else class="comment-avatar" icon="person"></avatar>
+			</a>
+		</div>
+		<div class="one-comment">
+			<div class="user-name">{{! comment.username }}</div>
+			<p class="comment-content">{{! comment.content }}</p>
+		</div>
+	</div>
+</template>
 {% end %}
 
 {% block script %}
 <script src="{{ static_url('js/aplayer/APlayer.min.js') }}"></script>
 <script>
+	var CommentList = Vue.component("comment-list", {
+		props: ["comment"],
+		template: "#comment-list"
+	});
+
 	var song = new Vue({
 		el: "#song",
 		data: function() {
 			return {
 				songInfo: {
-					name: "Sugar Song To Bitter Step",
-					artist: "Unison Square Garden",
-					uploader: {name: "小栗婷", id: "000"},
-					desc: "aaa",
+					name: "{{ name }}",
+					artist: "{{ artist }}",
+					uploader: "{{ uploader }}",
+					uploader_id: "{{ uploader_id }}",
+					desc: "{{ desc }}",
+				},
+				logined: {{ user }},
+				user_id: "",
+				avatar: "",
+				username: "",
+				msg: "",
+				commentList: []
+			}
+		},
+		created: function() {
+			this.fetchData();
+		},
+		methods: {
+			sendComment: function() {
+				var that = this;
+				if (this.msg != "") {
+					this.$http.post("/api/comments",
+						{msg: that.msg, user_id: that.user_id, song_id: {{ song_id }}},
+						{emulateJSON: true}
+					).then(function(response) {
+						that.$Message.success("Success");
+						setTimeout(function() {
+							location.reload();
+						}, 2000);
+					})
 				}
+			},
+			fetchData: function() {
+				var that = this;
+				this.$http.post("/musicweb/song/" + {{ song_id }}
+				).then(function(response) {
+					that.user_id = response.body.user_id;
+					that.avatar = response.body.avatar;
+					that.username = response.body.username;
+				});
+				this.$http.get("/api/comments?song_id=" + {{ song_id }}
+				).then(function(response) {
+					that.commentList = response.body.comment_list;
+					console.log(that.commentList);
+				})
 			}
 		}
 	});
@@ -66,10 +151,10 @@
 	var ap = new APlayer({
 		container: document.getElementById("aplayer"),
 		audio: [{
-			name: "sugar song to bitter step",
-			artist: "unison square garden",
-			url: "{{ static_url('audio/test.mp3') }}",
-			cover: "{{ static_url('img/column.jpg') }}"
+			name: "{{ name }}",
+			artist: "{{ artist }}",
+			url: "{{ file_path }}",
+			cover: "{{ cover_path }}"
 		}]
 	})
 

@@ -7,10 +7,9 @@
 {% block main %}
 <div id="column">
 	<div class="user-nav">
-		<div class="user-block">{{! name }}</div>
+		<div class="user-block">{{! username }}</div>
 		<router-link to="columns"><div class="test-usec">专栏</div></router-link>
 		<div v-if="yourself">
-			<!-- <router-link to="edit"><div class="test-usec">编辑</div></router-link> -->
 			<a :href="'/musicweb/space/columns/'+user_id+'/edit'"><div class="test-usec">编辑</div></a>
 		</div>
 	</div>
@@ -19,7 +18,27 @@
 
 <template id="columns">
 	<div class="contri-container">
-		<div class="contri" style="background: black;"></div>
+		<div class="contri" style="background:rgba(0, 0, 0, 0.8); padding-top:40px; border-radius:8px;">
+			<column-list
+			  v-for="item in columns"
+			  v-bind:column="item"
+			  v-bind:key="item.id">
+			</column-list>
+		</div>
+	</div>
+</template>
+
+<template id="column-list">
+	<div class="article-item">
+		<div class="item-holder" style="padding:10px 0">
+			<div class="article-content">
+				<div>
+					<a :href="column.url" target="_blank" class="article-title-holder" style="text-align:left; padding-left:10px">
+						<span class="article-title" :title="column.name">{{! column.name }}</span>
+					</a>
+				</div>
+			</div>
+		</div>
 	</div>
 </template>
 {% end %}
@@ -31,11 +50,33 @@
 
 	var Column = Vue.extend({
 		template: "#columns",
+		data: function() {
+			return {
+				columns: [],
+			}
+		},
+		created: function() {
+			this.fetchData();
+		},
+		methods: {
+			fetchData: function() {
+				var that = this;
+				this.$http.get("/api/columnspace/" + {{ space_id }}
+				).then(function(response) {
+					that.columns = response.body.columns;
+				})
+			}
+		}
 	});
 
 	var Editor = Vue.extend({
 		template: "#edit",
-	})
+	});
+
+	var ColumnList = Vue.component("column-list", {
+		props: ["column"],
+		template: "#column-list"
+	});
 
 	var routes = [
 	    {path: "/", component: Column},
@@ -48,9 +89,24 @@
 		router,
 		data: function() {
 			return {
-				name: "小栗婷",
-				user_id: "0000",
-				yourself: true
+				username: "",
+				user_id: "",
+				yourself: false,
+				space_id: {{ space_id }}
+			}
+		},
+		created: function() {
+			this.fetchData();
+		},
+		methods: {
+			fetchData: function() {
+				var that = this;
+				this.$http.post("/musicweb/space/columns/" + {{ space_id }}
+				).then(function(response) {
+					that.username = response.body.username;
+					that.user_id = response.body.user_id;
+					that.yourself = response.body.yourself;
+				})
 			}
 		}
 	}).$mount("#column");
