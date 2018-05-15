@@ -21,4 +21,5 @@
 > /butler/login
 
 ## 效果截图  
-
+1. 首页  
+![](effect/1.png)

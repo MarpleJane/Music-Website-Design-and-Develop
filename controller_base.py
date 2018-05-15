@@ -49,7 +49,7 @@ class BaseController(RequestHandler):
             username = ur.account,
             desc = ur.info[0].description,
             avatar = ur.info[0].avatar,
-            status = ur.info[0].status
+            status = ur.status
         )
 
     def trail_pass(self):
