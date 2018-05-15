@@ -44,70 +44,72 @@
 		    font-weight: 700;
 		    line-height: 40px;
 		}
+		.info {
+		    color: #9b9b9b;
+		    font-size: 12px;
+		    font-weight: 400;
+		}
+		.title {
+		    font-size: 28px;
+		    color: #222;
+		    margin-bottom: 14px;
+		    font-weight: 700;
+		    line-height: 1.4;
+		}
 	</style>
 </head>
 <body background="{{ static_url('img/system/edit_background.jpg') }}" style="background-attachment: fixed;">
-	<div style="width:966px; min-height:768px; background:#fff; margin:0 auto; padding:20px;">
-		<div class="ui-input-textarea article-title" type="text">
-			<textarea maxlength placeholder="请输入标题" style="overflow-y:hidden;height:64px" id="title"></textarea>
+	<div id="column" style="width:966px; min-height:768px; background:#fff; margin:0 auto; padding:20px;">
+		<div>
+			<h1 class="title">{{! column.name }}</h1>
+			<!-- <p style="overflow-y:hidden; height:64px;">{{! column.name }}</p> -->
+			<!-- <textarea maxlength placeholder="请输入标题" style="overflow-y:hidden;height:64px" id="title"></textarea> -->
 		</div>
-		<div id="editor" style="min-height: 600px;">
-			<p>HelloWorld!</p>
+		<div class="info">
+			作者：<a :href="'/musicweb/space/' + column.author_id" target="_blank">{{! column.author }}</a>
 		</div>
-		<div id="column">
-			<!-- <upload :on-success="handleSuccess" :headers="headers" action="http://192.168.31.10/uploadMusic"></upload> -->
-			<i-button @click="uploadHTML()">提交</i-button>
+		<div style="min-height: 600px; margin-top:20px;">
+			<iframe :src="column.url" frameborder="0"></iframe>
 		</div>
 	</div>
 	<script src="{{ static_url('js/vue/vue.js') }}"></script>
 	<script src="{{ static_url('js/iview/iview2.9.2.min.js') }}"></script>
 	<script src="{{ static_url('js/vue/vue-resource.js') }}"></script>
-	<script src="{{ static_url('js/quill.js') }}"></script>
 	<script>
 		Vue.use(VueResource);
-
-		var quill = new Quill("#editor", {
-			theme: "snow"
-		});
 
 		var column = new Vue({
 			el: "#column",
 			data: function() {
 				return {
-					headers: {"Access-Control-Allow-Origin": "*", "contentType": "application/json;charset=utf-8;"},
+					// column: {
+					// 	name: "aaa",
+					// 	url: "http://192.168.31.10/Receives/columns/2018-05-12/2018-05-12_.html",
+					// 	author: "aaa",
+					// 	author_id: "1"
+					// },
+					column: {
+						name: "",
+						url: "",
+						author: "",
+						author_id: ""
+					},
 				}
 			},
+			created: function() {
+				this.fetchData();
+			},
 			methods: {
-				uploadHTML: function() {
-					console.log(quill.container.firstChild.innerHTML);
-					console.log(document.getElementById("title").value);
-					var column_content = quill.container.firstChild.innerHTML;
-					var column_name = document.getElementById("title").value;
+				fetchData: function() {
 					var that = this;
-					if (column_name) {
-						this.$http.post("http://192.168.31.10/uploadHandler",
-							  {media_type: "column", column: column_name, content: column_content},
-							  {emulateJSON: true}
-						).then(function(response) {
-							var file_path = response.body.file_path;
-							console.log(file_path);
-							that.$http.post("/musicweb/space/columns/"+{{user_id}}+"/edit",
-							    {name: column_name, uri: file_path},
-								{emulateJSON: true}
-							).then(function(response) {
-								var ret = response.body.ret;
-								if (ret==0) {
-									that.$Message.success("Success");
-									setTimeout(function() {
-										location.reload();
-									}, 2000);
-								}
-							})
-						})
-					} else {
-						that.$Message.error("标题不能为空");
-					}
-				},
+					this.$http.post("/musicweb/space/column/" + {{ column_id }}
+					).then(function(response) {
+						that.column.name = response.body.name;
+						that.column.url = response.body.store_url;
+						that.column.author = response.body.author;
+						that.column.author_id = response.body.author_id;
+					})
+				}
 			}
 		});
 	</script>

@@ -18,13 +18,16 @@ class FrontSigninController(BaseController):
                 first()
         flag = False
         if ur:
-            if ur.password == password:
-                flag = True
-            if not flag:
-                self.write(dict(ret=1, msg="Password error"))
+            if ur.status == 0:
+                if ur.password == password:
+                    flag = True
+                if not flag:
+                    self.write(dict(ret=1, msg="Password error"))
+                else:
+                    self.set_secure_cookie("user_id", str(ur._id), expires_days=None)
+                    self.write(dict(ret=0, msg="Login success", url="index"))
             else:
-                self.set_secure_cookie("user_id", str(ur._id), expires_days=None)
-                self.write(dict(ret=0, msg="Login success", url="index"))
+                self.write(dict(ret=1, msg="用户被禁用"))
         else:
             self.write(dict(ret=1, msg="User not exist"))
 

@@ -3,7 +3,7 @@
 <head>
 	<meta charset="UTF-8">
 	<title>Wuliwuli</title>
-	<link rel="stylesheet" type="text/css" href="https://cdn.bootcss.com/iview/2.13.1/styles/iview.css">
+	<link rel="stylesheet" href="{{ static_url('css/iview/styles/iview.css') }}">
 	<link rel="stylesheet" href="{{ static_url('css/mycss.css') }}">
 	<style>
         .ivu-form .ivu-form-item-label {
@@ -24,8 +24,9 @@
 	<div id="setting" style="width:966px; min-height:768px; background:rgba(0, 0, 0, 0.8); margin:0 auto; padding:20px;">
 		<div style="">
 			<div class="demo-avatar">
-				<avatar icon="person" size="large" style="width:80px; height:80px; line-height:80px; border-radius:40px;"></avatar>
-				<upload action="">
+				<avatar v-if="formItem.avatar" :src="formItem.avatar" size="large" style="width:80px; height:80px; line-height:80px; border-radius:40px;"></avatar>
+				<avatar v-else icon="person" size="large" style="width:80px; height:80px; line-height:80px; border-radius:40px;"></avatar>
+				<upload action="http://192.168.31.10/uploadMusic" :on-success="handleSuccess">
 					<i-button style="margin:0 auto; margin-top:10px; display:block;">修改头像</i-button>
 				</upload>
 			</div>
@@ -59,7 +60,8 @@
 						nickname: "",
 						desc: "",
 						avatar: ""
-					}
+					},
+					headers: {"Access-Control-Allow-Origin": "*", "contentType": "application/json;charset=utf-8;"},
 				}
 			},
 			created: function() {
@@ -89,6 +91,15 @@
 						}
 					}, function(response) {
 						alert("error");
+					})
+				},
+				handleSuccess: function(response) {
+					var that = this;
+					this.$http.post("/api/userinfochange/" + {{ user_id}},
+					  {username: that.formItem.nickname, desc: that.formItem.desc, avatar: response.file_path },
+					  {emulateJSON: true}
+					).then(function(res) {
+						that.formItem.avatar = "http://192.168.31.10/" + response.file_path;
 					})
 				}
 			}

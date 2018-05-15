@@ -12,7 +12,8 @@
 		<div class="test-urpic"></div>
 		<div class="usection-outter">
 			<div class="demo-avatar">
-				<avatar class="avatar" icon="person" size="large"></avatar>
+				<avatar v-if="avatar" class="avatar" :src="avatar" size="large"></avatar>
+				<avatar v-else class="avatar" icon="person" size="large"></avatar>
 				<p class="username">{{! username }}</p>
 			</div>
 			<div class="usection-container fadeInUp">

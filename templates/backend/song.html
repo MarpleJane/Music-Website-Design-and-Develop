@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<link rel="stylesheet" href="{{ static_url('css/iview/styles/iview.css') }}">
+	<link rel="stylesheet" href="{{ static_url('css/backcss.css') }}">
+	<link rel="stylesheet" href="{{ static_url('css/aplayer/APlayer.min.css') }}">
+</head>
+<body>
+	<div id="song">
+		<!-- <div class="song-header"> -->
+			<h1>{{! songInfo.name }}</h1>
+		<!-- </div> -->
+		<div class="block-padding">
+	    	<div id="aplayer"></div>
+	    </div>
+
+		<div class="song-intro">
+			<div><span>音频名：</span>{{! songInfo.author }}</div>
+			<div><span>创作类型：</span>{{! songInfo.origin_type }}</div>
+			<div><span>类型：</span>{{! songInfo.type_name }}</div>
+			<div><span>简介：</span>{{! songInfo.description }}</div>
+		</div>
+
+		<div>
+			<i-button :type="songInfo.flag==0?'primary':'ghost'" @click="changeStatus(0)">待审核</i-button>
+			<i-button :type="songInfo.flag==1?'primary':'ghost'" @click="changeStatus(1)">通过</i-button>
+			<i-button :type="songInfo.flag==2?'primary':'ghost'" @click="changeStatus(2)">未通过</i-button>
+		</div>
+	</div>
+
+	<script src="{{ static_url('js/vue/vue.js') }}"></script>
+	<script src="{{ static_url('js/iview/iview2.9.2.min.js') }}"></script>
+	<script src="{{ static_url('js/vue/vue-resource.js') }}"></script>
+	<script src="{{ static_url('js/vue/vue-router@3.0.1.js') }}"></script>
+	<script src="{{ static_url('js/aplayer/APlayer.min.js') }}"></script>
+	<script>
+		var song = new Vue({
+			el: "#song",
+			data: function() {
+				return {
+					songInfo: {},
+				}
+			},
+			created: function() {
+				this.fetchData();
+			},
+			methods: {
+				fetchData: function() {
+					var that = this;
+					this.$http.get("/bpi/songinfo/" + {{ song_id }}
+					).then(function(response) {
+						that.songInfo = response.body.song_info;
+					})
+				},
+				changeStatus: function(status) {
+					var that = this;
+					if (this.songInfo.flag != status) {
+						this.$http.post("/bpi/songinfo/" + {{ song_id }},
+							{flag: status},
+							{emulateJSON: true}
+						).then(function(response) {
+							that.songInfo.flag = status;
+							that.$Message.success("Success");
+						})
+					}
+				}
+			}
+		});
+
+		var ap = new APlayer({
+			container: document.getElementById("aplayer"),
+			audio: [{
+				name: "{{ name }}",
+				artist: "{{ author }}",
+				url: "{{ file_path }}",
+				cover: "{{ cover_path }}"
+			}]
+		})
+	</script>
+</body>
+</html>

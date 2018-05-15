@@ -3,8 +3,421 @@
 <head>
 	<meta charset="UTF-8">
 	<title>Document</title>
+	<link rel="stylesheet" href="{{ static_url('css/iview/styles/iview.css') }}">
+	<link rel="stylesheet" href="{{ static_url('css/backcss.css') }}">
 </head>
 <body>
-	<div>hello</div>
+	<div class="layout" id="backend">
+		<layout>
+			<sider ref="side1" hide-trigger collapsible :collapsed-width="78" v-model="isCollapsed" :style="{position: 'fixed', height: '100vh', left: 0, overflow: 'auto'}">
+				<i-menu active-name="2" theme="dark" width="auto" :class="menuitemClasses" :open-names="['2']">
+					<router-link to="/frontend">
+						<menu-item name="1">
+							<icon type="refresh"></icon>
+							<span>前端布置</span>
+						</menu-item>
+					</router-link>
+
+<!-- 					<submenu name="2">
+						<template slot="title">
+							<icon type="ios-keypad"></icon>
+							<span>审核</span>
+						</template>
+						<router-link to="/musicTrail">
+							<menu-item name="2-1">音频审核</menu-item>
+						</router-link>
+
+						<router-link to="/columnTrail">
+							<menu-item name="2-2">专栏审核</menu-item>
+						</router-link>
+					</submenu> -->
+
+					<router-link to="/musicTrail">
+						<menu-item name="2">
+							<icon type="ios-keypad"></icon>
+							<span>音频审核</span>
+						</menu-item>
+					</router-link>
+<!-- 					<router-link to="/musicManage">
+						<menu-item name="3">
+							<icon type="search"></icon>
+							<span>音频管理</span>
+						</menu-item>
+					</router-link> -->
+
+<!-- 					<submenu name="4">
+						<template slot="title">
+							<icon type="gear-a"></icon>
+							<span>信息管理</span>
+						</template>
+						<router-link to="/userManage">
+							<menu-item name="4-1">用户</menu-item>
+						</router-link>
+
+						<router-link to="/adminManage">
+							<menu-item name="4-2">管理员</menu-item>
+						</router-link>
+					</submenu> -->
+
+					<router-link to="/userManage">
+						<menu-item name="4">
+							<icon type="gear-a"></icon>
+							<span>用户管理</span>
+						</menu-item>
+					</router-link>
+
+<!-- 					<router-link to="/upload">
+						<menu-item name="5">
+							<icon type="upload"></icon>
+							<span>上传</span>
+						</menu-item>
+					</router-link> -->
+
+					<menu-item name="6" @click.native="logout">
+						<icon type="android-exit"></icon>
+						<span>退出</span>
+					</menu-item>
+				</i-menu>
+			</sider>
+			<layout :style="{marginLeft: '200px'}">
+				<!-- <i-header :style="{padding:0, position:'fixed'}" class="layout-header-bar"> -->
+					<!-- <icon @click.native="collapsedSider" :class="rotateIcon" :style="{margin:'20px 20px 0'}" type="navicon-round" size="24"></icon> -->
+				<!-- </i-header> -->
+				<content :style="{margin:'20px', background:'#fff', minHeight:'760px'}">
+					<router-view></router-view>
+				</content>
+			</layout>
+		</layout>
+	</div>
+
+	<template id="frontend">
+		<div>
+			<div class="carousel-div">
+				<div>
+					<i-input v-model="target1" style="width:300px"></i-input>
+					<upload ref="carousel1" :before-upload="carouselUpload1" action="http://192.168.31.10/uploadMusic" 
+					        class="carousel-display" :headers="headers" :on-success="handelSuccess1">
+						<i-button icon="ios-cloud-upload-outline">Carousel1</i-button>
+					</upload>
+				</div>
+				<div>
+					<i-input v-model="target2" style="width:300px"></i-input>
+					<upload ref="carousel2" :before-upload="carouselUpload2" action="http://192.168.31.10/uploadMusic"
+					        class="carousel-display" :headers="headers" :on-success="handelSuccess2">
+						<i-button icon="ios-cloud-upload-outline">Carousel2</i-button>
+					</upload>
+				</div>
+			</div>
+			<div class="carousel-div">
+				<ul>
+					<li>
+						Carsousel1: {{! carouselList[0].target }} => {{! carouselList[0].url }}
+					</li>
+					<li>
+						Carsousel2: {{! carouselList[1].target }} => {{! carouselList[1].url }}
+					</li>
+				</ul>
+			</div>
+		</div>
+	</template>
+
+	<template id="music-trail">
+		<div>
+			<h1>审核列表</h1>
+			<i-table border :columns="fixedColumn" :data="musicTrailList"></i-table>
+		</div>
+	</template>
+
+<!-- 	<template id="column-trail">
+		<div>
+			<h1>审核列表</h1>
+			<i-table border :columns="fixedColumn" :data="columnTrailList"></i-table>
+		</div>
+	</template>
+	<template id="music-manage"></template> -->
+
+	<template id="user-manage">
+		<div>
+			<h1>用户列表</h1>
+			<i-table border :columns="fixedColumn" :data="userList"></i-table>
+		</div>
+	</template>
+
+	<!-- <template id="admin-manage"></template> -->
+	<template id="upload"></template>
+
+	<script src="{{ static_url('js/vue/vue.js') }}"></script>
+	<script src="{{ static_url('js/iview/iview2.9.2.min.js') }}"></script>
+	<script src="{{ static_url('js/vue/vue-resource.js') }}"></script>
+	<script src="{{ static_url('js/vue/vue-router@3.0.1.js') }}"></script>
+	<script>
+		Vue.use(VueRouter);
+
+		var Frontend = Vue.extend({
+			template: "#frontend",
+			data: function() {
+				return {
+					target1: "",
+					target2: "",
+					carouselList: [
+					  {target: "null", url: "null"},
+					  {target: "null", url: "null"},
+					],
+					headers: {"Access-Control-Allow-Origin": "*", "contentType": "application/json;charset=utf-8;"},
+				}
+			},
+			methods: {
+				carouselUpload1: function(file) {
+					if (this.target1 != "") {
+						this.$refs.carousel1.post(file);
+					} else {
+						return false;
+					}
+				},
+				carouselUpload2: function(file) {
+					if (this.target2 != "") {
+						this.$refs.carousel2.post(file);
+					} else {
+						return false;
+					}
+				},
+				handelSuccess1: function(response) {
+					console.log("Success");
+					var that = this;
+					var file_path = response.file_path;
+					this.$http.post("/api/carousel",
+						{url: file_path, target: that.target1, car_id: 1},
+						{emulateJSON: true}
+					).then(function(res) {
+						that.target1 = res.body.target;
+						that.url1 = res.body.url;
+						that.carouselList[0].target = that.target1;
+						that.carouselList[0].url = that.url1;
+					})
+				},
+				handelSuccess2: function(response) {
+					console.log("Success");
+					var that = this;
+					var file_path = response.file_path;
+					this.$http.post("/api/carousel",
+						{url: file_path, target: that.target2, car_id: 2},
+						{emulateJSON: true}
+					).then(function(res) {
+						that.target2 = res.body.target;
+						that.url2 = res.body.url;
+						that.carouselList[1].target = that.target2;
+						that.carouselList[1].url = that.url2;
+					})
+				},
+			}
+		});
+
+		var MusicTrail = Vue.extend({
+			template: "#music-trail",
+			data: function() {
+				return {
+					fixedColumn: [
+					  {title: "ID", key: "_id"},
+					  {title: "音频名", key: "name"},
+					  {title: "审核", key: "trail",
+					    render: function(h, params) {
+					    	mapName = ["待审核", "通过", "未通过"];
+					    	var trailButton =  [h("Button", {
+					    		props: {
+					    			type: "primary",
+					    			size: "small"
+					    		},
+					    		style: {
+					    			marginRight: "5px"
+					    		},
+					    		on: {
+					    			click: function() {
+					    				window.open(params.row.burl);
+					    			}
+					    		}
+					    	  }, mapName[params.row.flag])];
+					    	return h("div", trailButton);
+					    }
+					  }
+					],
+					// musicTrailList: [
+					//   {name: "aaa", flag: 0, url: "http://www.baidu.com"},
+					//   {name: "bbb", flag: 1, url: "www.baidu.com"},
+					//   {name: "ccc", flag: 2, url: "www.baidu.com"},
+					// ],
+					musicTrailList: [],
+				}
+			},
+			created: function() {
+				this.fetchData();
+			},
+			methods: {
+				fetchData: function() {
+					var that = this;
+					this.$http.get("/bpi/songtrail",
+					).then(function(response) {
+						that.musicTrailList = response.body.song_list;
+					})
+				}
+			}
+		});
+
+		var ColumnTrail = Vue.extend({
+			template: "#column-trail",
+			data: function() {
+				return {
+					fixedColumn: [
+					  {title: "专栏名", key: "name",
+					    render: function(h, params) {
+					    	var href = [h("a", {
+					    		on: {
+					    			click: function() {
+					    				window.open(params.row.url);
+					    			}
+					    		}
+					    	}, params.row.name)];
+					    	return h("div", href);
+					    }
+					  },
+					  {title: "审核", key: "trail",
+					    render: function(h, params) {
+					    	mapName = ["待审核", "通过", "未通过"];
+					    	var trailButton =  [h("Button", {
+					    		props: {
+					    			type: "primary",
+					    			size: "small"
+					    		},
+					    		style: {
+					    			marginRight: "5px"
+					    		},
+					    	  }, mapName[params.row.flag])];
+					    	return h("div", trailButton);
+					    }
+					  }
+					],
+					columnTrailList: [
+					  {name: "aaa", flag: 0, url: "http://www.baidu.com"},
+					  {name: "bbb", flag: 1, url: "www.baidu.com"},
+					  {name: "ccc", flag: 2, url: "www.baidu.com"},
+					]
+				}
+			}
+		});
+
+		var MusicManage = Vue.extend({
+			template: "#music-manage",
+		});
+
+		var UserManage = Vue.extend({
+			template: "#user-manage",
+			data: function() {
+				return {
+					fixedColumn: [
+					      {title: "ID", key: "_id"},
+						  {title: "用户名", key: "account"},
+						  {title: "审核", key: "status",
+						    render: function(h, params) {
+						    	mapName = ["可用", "禁用"];
+						    	var trailButton =  [h("Button", {
+						    		props: {
+						    			type: "primary",
+						    			size: "small"
+						    		},
+						    		style: {
+						    			marginRight: "5px"
+						    		},
+						    		on: {
+						    			click: function() {
+						    				params.row.status = parseInt(params.row.status);
+						    				var new_status = params.row.status ^ 1;
+						    				mythis.$http.post("/bpi/userstatus",
+						    					{user_id: params.row._id, status: new_status},
+												{emulateJSON: true}
+						    				).then(function(response) {
+						    					mythis.$Message.success("Success");
+						    					params.row.status = new_status;
+
+						    				})
+						    		        // this.UserManage.extendOptions.methods.changeStatus(params.row._id, params.row.status);
+						    		 	}
+						    		}
+						    	  }, mapName[params.row.status])];
+						    	return h("div", trailButton);
+						    }
+						  }
+					],
+					userList: [],
+					
+				}
+			},
+			created: function() {
+				this.fetchData();
+			},
+			methods: {
+				fetchData: function() {
+					var that = this;
+					this.$http.get("/bpi/userstatus",
+					).then(function(response) {
+						that.userList = response.body.user_list;
+					});
+					// window.http = this.$http;
+					window.mythis = this;
+				},
+			}
+		});
+
+		var AdminManage = Vue.extend({
+			template: "#admin-manage"
+		});
+
+		var Upload = Vue.extend({
+			template: "#upload"
+		});
+
+		var routes = [
+		  {path: "/frontend", component: Frontend},
+		  {path: "/musicTrail", component: MusicTrail},
+		  {path: "/columnTrail", component: ColumnTrail},
+		  {path: "/musicManage", component: MusicManage},
+		  {path: "/userManage", component: UserManage},
+		  {path: "/adminManage", component: AdminManage},
+		  {path: "/upload", component: Upload},
+		  {path: "/", component: MusicTrail},
+		];
+
+		var router = new VueRouter({routes});
+
+		var backend = new Vue({
+			// el: "#backend",
+			router,
+			data: function() {
+				return {
+	                isCollapsed: false
+	            }
+			},
+			computed: {
+	            rotateIcon: function() {
+	                return [
+	                    'menu-icon',
+	                    this.isCollapsed ? 'rotate-icon' : ''
+	                ];
+	            },
+	            menuitemClasses: function() {
+	                return [
+	                    'menu-item',
+	                    this.isCollapsed ? 'collapsed-menu' : ''
+	                ]
+	            }
+	        },
+	        methods: {
+	            collapsedSider: function() {
+	                this.$refs.side1.toggleCollapse();
+	            },
+	            logout: function() {
+	            	window.location.href = "/butler/logout";
+	            },
+	        }
+		}).$mount("#backend");
+	</script>
 </body>
 </html>

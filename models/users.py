@@ -12,8 +12,13 @@ class UserLogin(ORMBase):
     _id = Column(Integer, primary_key=True, autoincrement=True)
     account = Column(String(64), nullable=False)
     password = Column(String(128), nullable=False)
+    status = Column(Integer, nullable=False, default=0)
     info = relationship("UserInfo")
     upload_songs = relationship("Songs")
+
+    @property
+    def avatar(self):
+        return self.info[0].avatar
 
 
 class UserInfo(ORMBase):

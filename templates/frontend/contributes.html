@@ -61,16 +61,16 @@
 
 <template id="contrib">
 	<div class="contri-container">
-		<div class="contri">
-			<div style="display: inline-block;margin-left: 20px;">
+		<div class="contri" style="background:rgba(0, 0, 0, 0.8); border-radius:8px;">
+			<div style="margin-left: 20px;">
 				<song-list
-			      v-for="item in songs"
+			      v-for="item in spaceSong"
 			      v-bind:song="item"
 			      v-bind:key="item.id">
 			    </song-list>
 			</div>
 			
-		    <div style="position: absolute;bottom:5px;margin:0 auto; display: inline-block;">
+		    <div style="position: absolute;bottom:5px;margin:0 auto;">
 		    <!-- <div align="center" class="pagination"> -->
 				<page :current="current" :total="total" :page-size="pageSize" @on-change="changePage"></page>
 			</div>
@@ -81,10 +81,10 @@
 <template id="uploads">
 	<div class="contri-container">
 		<div class="contri" style="background:rgba(0, 0, 0, 0.8); padding-top:40px; border-radius:8px;">
-			<upload ref="music" :before-upload="musicUpload" action="http://192.168.31.10/uploadMusic">
+			<upload ref="music" :on-success="handleSuccess" :headers="headers" :before-upload="musicUpload" action="http://192.168.31.10/uploadMusic">
 				<i-button icon="ios-cloud-upload-outline">传音频</i-button>
 			</upload>
-			<upload ref="cover" :before-upload="coverUpload" action="http://192.168.31.10/uploadMusic">
+			<upload ref="cover" :on-success="handleSuccess" :headers="headers" :before-upload="coverUpload" action="http://192.168.31.10/uploadMusic">
 				<i-button icon="ios-cloud-upload-outline">传封面</i-button>
 			</upload>
 			<div v-for="(item, index) in files" style="color:white;">upload file: {{! item.name }}
@@ -126,21 +126,43 @@
 
 <template id="trails">
 	<div class="contri-container">
-		<div class="contri" style="background:black;"></div>
+		<div class="contri" style="background:rgba(0, 0, 0, 0.8); border-radius:8px;">
+			<ul style="text-align:left; margin-left:50px; margin-top:30px;">
+				<trail-list v-for="item in trails"
+				            v-bind:trail="item"
+				            v-bind:key="item._id">
+				</trail-list>
+			</ul>
+
+			<div style="position: absolute;bottom:5px;margin:0 auto;">
+				<page :current="current" :total="total" :page-size="pageSize" @on-change="changePage"></page>
+			</div>
+		</div>
 	</div>
 </template>
 
 <template id="song-list">
 	<div class="spread-module" style="margin-bottom: 10px">
-		<a :href="song.link" target="_blank">
+		<a :href="song.url" target="_blank">
 			<div class="pic">
-				<div class="lazy-pic">
-					<img :src="song.pic" :alt="song.name" :title="song.name">
+				<div class="lazy-img">
+					<img :src="song.cover_path" :alt="song.name" :title="song.name">
 				</div>
 			</div>
-			<p class="t" style="font-size:15px;font-weight:700;" :title="song.name">{{! song.name }}</p>
+			<p class="t" :title="song.name">{{! song.name }}</p>
 		</a>
 	</div>
+</template>
+
+<template id="trail-list">
+	<li style="margin-bottom:2px; margin-left:5px; color:white;">
+		<div style="width:50%; text-overflow:ellipsis; display:inline-block;">
+			{{! trail.name }}
+		</div>
+		<div style="display:inline-block;">
+			{{! trail.flag_name}}
+		</div>
+	</li>
 </template>
 {% end %}
 
@@ -152,30 +174,37 @@
 		template: "#contrib",
 		data: function() {
 			return {
-				// name: "小栗婷",
-				yourself: false,
 				current: 1,
-				total: 6,
-				pageSize: 2,
-				songs: [
-				  {link: "/musicweb/song", pic: "{{ static_url('img/test.jpg') }}", name: "test" },
-				  {link: "/musicweb/song", pic: "{{ static_url('img/test.jpg') }}", name: "test" },
-				  {link: "/musicweb/song", pic: "{{ static_url('img/test.jpg') }}", name: "test" },
-				  {link: "/musicweb/song", pic: "{{ static_url('img/test.jpg') }}", name: "test" },
-				  {link: "/musicweb/song", pic: "{{ static_url('img/test.jpg') }}", name: "test" },
-				  {link: "/musicweb/song", pic: "{{ static_url('img/test.jpg') }}", name: "test" },
-				  {link: "/musicweb/song", pic: "{{ static_url('img/test.jpg') }}", name: "test" },
-				  {link: "/musicweb/song", pic: "{{ static_url('img/test.jpg') }}", name: "test" },
-				  {link: "/musicweb/song", pic: "{{ static_url('img/test.jpg') }}", name: "test" },
-				  {link: "/musicweb/song", pic: "{{ static_url('img/test.jpg') }}", name: "test" },
-				  {link: "/musicweb/song", pic: "{{ static_url('img/test.jpg') }}", name: "test" },
-				  {link: "/musicweb/song", pic: "{{ static_url('img/test.jpg') }}", name: "test" },
-				],
+				total: 0,
+				pageSize: 6,
+				spaceSong: []
 			}
+		},
+		created: function() {
+			this.fetchData();
 		},
 		methods: {
 			changePage: function(page) {
 				console.log(page);
+				this.current = page;
+				var that = this;
+				this.$http.post("/api/songspace",
+					{current: that.current, pageSize: that.pageSize, space_id: {{ space_id}} },
+					{emulateJSON: true}
+				).then(function(response) {
+					that.spaceSong = response.body.space_list;
+					that.total = response.body.total;
+				})
+			},
+			fetchData: function() {
+				var that = this;
+				this.$http.post("/api/songspace",
+					{current: that.current, pageSize: that.pageSize, space_id: {{ space_id}} },
+					{emulateJSON: true}
+				).then(function(response) {
+					that.spaceSong = response.body.space_list;
+					that.total = response.body.total;
+				})
 			}
 		}
 	});
@@ -184,6 +213,7 @@
 		template: "#uploads",
 		data: function() {
 			return {
+				headers: {"Access-Control-Allow-Origin": "*", "contentType": "application/json;charset=utf-8;"},
 				files: [],
 				music: false,
 				cover: false,
@@ -193,11 +223,48 @@
 					radio: "1",
 					musicType: "1",
 					desc: "",
-				}
+				},
+				musicPath: "",
+				coverPath: "",
 			}
 		},
 		methods: {
-			handleSuccess: function() {},
+			handleSuccess: function(response, file, fileList) {
+				console.log("success");
+				console.log(response);
+				var contentType = response.content_type;
+				var array = contentType.split("/");
+				if (array[0] == "image") {
+					this.coverPath = response.file_path;
+				} else if (array[0] == "audio") {
+					this.musicPath = response.file_path;
+				} else {
+					console.log("Unknown file type");
+				}
+				if (this.coverPath && this.musicPath) {
+					this.writeTo();
+				}
+			},
+			writeTo: function() {
+				console.log("music: ", this.musicPath);
+				console.log("cover: ", this.coverPath);
+				var that = this;
+				this.$http.post("/api/importsong",
+					{music_path: that.musicPath, cover_path: that.coverPath, 
+					 music_type: that.formItem.musicType, origin: that.formItem.radio,
+					 song_name: that.formItem.songName, artist: that.formItem.artist,
+					 desc: that.formItem.desc},
+					{emulateJSON: true}
+				).then(function(response) {
+					var ret = response.body.ret;
+					that.$Message.success("Success");
+					setTimeout(function() {
+						location.reload();
+					}, 2000);
+				}, function(response) {
+					alert("error");
+				})
+			},
 			handleUpload: function(file) {
 				var keyID = Math.random().toString().substr(2);
 				file["keyID"] = keyID;
@@ -262,18 +329,57 @@
 						this.$refs.cover.post(item);
 					}
 				}
-			}
+			},
 		}
 	});
 
 	var Trail = Vue.extend({
 		template: "#trails",
+		data: function() {
+			return {
+				trails: [],
+				current: 1,
+				total: 0,
+				pageSize: 20,
+			}
+		},
+		created: function() {
+			this.fetchData();
+		},
+		methods: {
+			changePage: function(page) {
+				this.current = page;
+				var that = this;
+				this.$http.post("/api/songtrail",
+					{current: that.current, pageSize: that.pageSize},
+					{emulateJSON: true}
+				).then(function(response) {
+					that.trails = response.body.trail_list;
+					that.total = response.body.total;
+				})
+			},
+			fetchData: function() {
+				var that = this;
+				this.$http.post("/api/songtrail",
+					{current: that.current, pageSize: that.pageSize},
+					{emulateJSON: true}
+				).then(function(response) {
+					that.trails = response.body.trail_list;
+					that.total = response.body.total;
+				})
+			}
+		}
 	});
 
 	var SongList = Vue.component("song-list", {
 		props: ["song"],
 		template: "#song-list"
 	});
+
+	var trailList = Vue.component("trail-list", {
+		props: ["trail"],
+		template: "#trail-list"
+	})
 
 	var routes = [
 	    {path: "/", component: Contribute},
